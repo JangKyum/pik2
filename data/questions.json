@@ -1,0 +1,907 @@
+[
+  {
+    "id": "q1",
+    "category": "food",
+    "question": "평생 김치찌개만 먹기 vs 된장찌개만 먹기",
+    "optionA": "김치찌개",
+    "optionB": "된장찌개",
+    "votesA": 142,
+    "votesB": 98
+  },
+  {
+    "id": "q2",
+    "category": "food",
+    "question": "치킨은 무조건 후라이드 vs 무조건 양념",
+    "optionA": "후라이드",
+    "optionB": "양념",
+    "votesA": 110,
+    "votesB": 121
+  },
+  {
+    "id": "q3",
+    "category": "food",
+    "question": "라면에 계란 넣기 vs 치즈 넣기",
+    "optionA": "계란",
+    "optionB": "치즈",
+    "votesA": 83,
+    "votesB": 133
+  },
+  {
+    "id": "q4",
+    "category": "food",
+    "question": "매일 삼겹살 먹기 vs 매일 초밥 먹기",
+    "optionA": "삼겹살",
+    "optionB": "초밥",
+    "votesA": 149,
+    "votesB": 105
+  },
+  {
+    "id": "q5",
+    "category": "food",
+    "question": "짬뽕만 먹기 vs 짜장면만 먹기",
+    "optionA": "짬뽕",
+    "optionB": "짜장면",
+    "votesA": 76,
+    "votesB": 179
+  },
+  {
+    "id": "q6",
+    "category": "food",
+    "question": "탄산 끊기 vs 커피 끊기",
+    "optionA": "탄산 끊기",
+    "optionB": "커피 끊기",
+    "votesA": 103,
+    "votesB": 152
+  },
+  {
+    "id": "q7",
+    "category": "food",
+    "question": "라면 스프 먼저 넣기 vs 면 먼저 끓이기",
+    "optionA": "스프 먼저",
+    "optionB": "면 먼저",
+    "votesA": 77,
+    "votesB": 169
+  },
+  {
+    "id": "q8",
+    "category": "food",
+    "question": "무조건 단맛만 느끼기 vs 무조건 매운맛만 느끼기",
+    "optionA": "단맛",
+    "optionB": "매운맛",
+    "votesA": 61,
+    "votesB": 202
+  },
+  {
+    "id": "q9",
+    "category": "food",
+    "question": "피자는 무조건 파인애플 넣기 vs 무조건 마요네즈 뿌리기",
+    "optionA": "파인애플",
+    "optionB": "마요네즈",
+    "votesA": 94,
+    "votesB": 147
+  },
+  {
+    "id": "q10",
+    "category": "food",
+    "question": "평생 라면 금지 vs 평생 치킨 금지",
+    "optionA": "라면 금지",
+    "optionB": "치킨 금지",
+    "votesA": 123,
+    "votesB": 126
+  },
+  {
+    "id": "q11",
+    "category": "lifestyle",
+    "question": "1억 받고 평생 집에만 있기 vs 돈 없어도 자유롭게 여행하기",
+    "optionA": "1억 + 집콕",
+    "optionB": "무전여행",
+    "votesA": 89,
+    "votesB": 156
+  },
+  {
+    "id": "q12",
+    "category": "lifestyle",
+    "question": "매일 5시에 기상 vs 매일 새벽 2시에 잠들기",
+    "optionA": "5시 기상",
+    "optionB": "2시 취침",
+    "votesA": 77,
+    "votesB": 140
+  },
+  {
+    "id": "q13",
+    "category": "lifestyle",
+    "question": "평생 자취 vs 평생 가족과 함께 살기",
+    "optionA": "자취",
+    "optionB": "가족과",
+    "votesA": 98,
+    "votesB": 121
+  },
+  {
+    "id": "q14",
+    "category": "lifestyle",
+    "question": "계획적인 삶 vs 즉흥적인 삶",
+    "optionA": "계획적",
+    "optionB": "즉흥적",
+    "votesA": 111,
+    "votesB": 99
+  },
+  {
+    "id": "q15",
+    "category": "lifestyle",
+    "question": "1일 1식 vs 1일 5식",
+    "optionA": "1식",
+    "optionB": "5식",
+    "votesA": 75,
+    "votesB": 142
+  },
+  {
+    "id": "q16",
+    "category": "lifestyle",
+    "question": "완벽한 청소 vs 완벽한 정리",
+    "optionA": "청소",
+    "optionB": "정리",
+    "votesA": 106,
+    "votesB": 111
+  },
+  {
+    "id": "q17",
+    "category": "lifestyle",
+    "question": "매일 같은 옷 입기 vs 매일 다른 옷 입기",
+    "optionA": "같은 옷",
+    "optionB": "다른 옷",
+    "votesA": 91,
+    "votesB": 135
+  },
+  {
+    "id": "q18",
+    "category": "lifestyle",
+    "question": "아예 스마트폰 없이 살기 vs 인터넷 없이 살기",
+    "optionA": "폰 없이",
+    "optionB": "인터넷 없이",
+    "votesA": 62,
+    "votesB": 187
+  },
+  {
+    "id": "q19",
+    "category": "lifestyle",
+    "question": "혼자 영화 보기 vs 혼자 여행 가기",
+    "optionA": "영화",
+    "optionB": "여행",
+    "votesA": 134,
+    "votesB": 95
+  },
+  {
+    "id": "q20",
+    "category": "lifestyle",
+    "question": "말 없이 사는 삶 vs 듣지 못하는 삶",
+    "optionA": "말 못함",
+    "optionB": "듣지 못함",
+    "votesA": 84,
+    "votesB": 145
+  },
+  {
+    "id": "q21",
+    "category": "superpower",
+    "question": "투명인간 되기 vs 하늘을 날 수 있기",
+    "optionA": "투명인간",
+    "optionB": "하늘을 날기",
+    "votesA": 78,
+    "votesB": 201
+  },
+  {
+    "id": "q22",
+    "category": "superpower",
+    "question": "시간 멈추기 vs 순간 이동하기",
+    "optionA": "시간 멈추기",
+    "optionB": "순간 이동",
+    "votesA": 141,
+    "votesB": 133
+  },
+  {
+    "id": "q23",
+    "category": "superpower",
+    "question": "미래 예지 능력 vs 과거 기억 조작 능력",
+    "optionA": "미래 예지",
+    "optionB": "기억 조작",
+    "votesA": 97,
+    "votesB": 117
+  },
+  {
+    "id": "q24",
+    "category": "superpower",
+    "question": "동물과 대화하기 vs 기계와 대화하기",
+    "optionA": "동물",
+    "optionB": "기계",
+    "votesA": 154,
+    "votesB": 78
+  },
+  {
+    "id": "q25",
+    "category": "superpower",
+    "question": "모든 언어를 이해하기 vs 모든 암호를 해독하기",
+    "optionA": "언어",
+    "optionB": "암호",
+    "votesA": 119,
+    "votesB": 106
+  },
+  {
+    "id": "q26",
+    "category": "superpower",
+    "question": "불사 능력 vs 무한 체력",
+    "optionA": "불사",
+    "optionB": "체력",
+    "votesA": 105,
+    "votesB": 129
+  },
+  {
+    "id": "q27",
+    "category": "superpower",
+    "question": "사람의 거짓말을 100% 알아보기 vs 내 거짓말은 절대 들키지 않기",
+    "optionA": "거짓말 간파",
+    "optionB": "거짓말 숨기기",
+    "votesA": 139,
+    "votesB": 101
+  },
+  {
+    "id": "q28",
+    "category": "superpower",
+    "question": "몸을 작게 만들기 vs 몸을 거대하게 만들기",
+    "optionA": "작게",
+    "optionB": "크게",
+    "votesA": 84,
+    "votesB": 122
+  },
+  {
+    "id": "q29",
+    "category": "superpower",
+    "question": "눈으로 레이저 쏘기 vs 손에서 불꽃 쏘기",
+    "optionA": "레이저 눈",
+    "optionB": "불꽃 손",
+    "votesA": 101,
+    "votesB": 111
+  },
+  {
+    "id": "q30",
+    "category": "superpower",
+    "question": "기억력 천재 vs 계산력 천재",
+    "optionA": "기억력",
+    "optionB": "계산력",
+    "votesA": 127,
+    "votesB": 103
+  },
+  {
+    "id": "q31",
+    "category": "time",
+    "question": "과거로 돌아가기 vs 미래로 가기",
+    "optionA": "과거로",
+    "optionB": "미래로",
+    "votesA": 167,
+    "votesB": 133
+  },
+  {
+    "id": "q32",
+    "category": "time",
+    "question": "시간을 하루 26시간으로 만들기 vs 한 달에 하루 추가하기",
+    "optionA": "하루 26시간",
+    "optionB": "하루 추가",
+    "votesA": 104,
+    "votesB": 119
+  },
+  {
+    "id": "q33",
+    "category": "time",
+    "question": "1초를 10배 느리게 느끼기 vs 1초를 10배 빠르게 느끼기",
+    "optionA": "느리게",
+    "optionB": "빠르게",
+    "votesA": 89,
+    "votesB": 143
+  },
+  {
+    "id": "q34",
+    "category": "time",
+    "question": "타임슬립 능력 vs 하루를 반복하는 능력",
+    "optionA": "타임슬립",
+    "optionB": "반복",
+    "votesA": 112,
+    "votesB": 111
+  },
+  {
+    "id": "q35",
+    "category": "time",
+    "question": "미래의 나와 대화하기 vs 과거의 나와 대화하기",
+    "optionA": "미래의 나",
+    "optionB": "과거의 나",
+    "votesA": 96,
+    "votesB": 130
+  },
+  {
+    "id": "q36",
+    "category": "time",
+    "question": "10년 젊어지기 vs 10년 후의 부를 얻기",
+    "optionA": "젊어지기",
+    "optionB": "부 얻기",
+    "votesA": 114,
+    "votesB": 102
+  },
+  {
+    "id": "q37",
+    "category": "time",
+    "question": "모든 일의 속도 2배 빨라지기 vs 모든 일의 실수 줄이기",
+    "optionA": "속도",
+    "optionB": "정확도",
+    "votesA": 106,
+    "votesB": 118
+  },
+  {
+    "id": "q38",
+    "category": "time",
+    "question": "아무 때나 10분만큼 멈추는 능력 vs 하루에 한 번만 멈추는 능력",
+    "optionA": "10분 자유",
+    "optionB": "1회 정지",
+    "votesA": 109,
+    "votesB": 109
+  },
+  {
+    "id": "q39",
+    "category": "time",
+    "question": "매일 아침 1시간 추가 수면 vs 매일 저녁 1시간 자유시간",
+    "optionA": "수면",
+    "optionB": "자유시간",
+    "votesA": 88,
+    "votesB": 124
+  },
+  {
+    "id": "q40",
+    "category": "time",
+    "question": "하루에 단 4시간만 일하고 충분한 돈 벌기 vs 지금처럼 일하고 더 많은 돈 벌기",
+    "optionA": "4시간만 일하기",
+    "optionB": "많이 벌기",
+    "votesA": 135,
+    "votesB": 108
+  },
+  {
+    "id": "q41",
+    "category": "weather",
+    "question": "평생 여름만 있기 vs 평생 겨울만 있기",
+    "optionA": "영원한 여름",
+    "optionB": "영원한 겨울",
+    "votesA": 198,
+    "votesB": 87
+  },
+  {
+    "id": "q42",
+    "category": "weather",
+    "question": "비 오는 날 외출하기 vs 눈 오는 날 외출하기",
+    "optionA": "비",
+    "optionB": "눈",
+    "votesA": 76,
+    "votesB": 123
+  },
+  {
+    "id": "q43",
+    "category": "weather",
+    "question": "덥지만 맑은 날 vs 춥지만 맑은 날",
+    "optionA": "더운 맑은 날",
+    "optionB": "추운 맑은 날",
+    "votesA": 109,
+    "votesB": 97
+  },
+  {
+    "id": "q44",
+    "category": "weather",
+    "question": "평생 우산 없이 살기 vs 평생 선크림 없이 살기",
+    "optionA": "우산 없이",
+    "optionB": "선크림 없이",
+    "votesA": 91,
+    "votesB": 111
+  },
+  {
+    "id": "q45",
+    "category": "weather",
+    "question": "날씨 앱 없이 살기 vs 기상캐스터 말만 믿기",
+    "optionA": "앱 없이",
+    "optionB": "캐스터만",
+    "votesA": 88,
+    "votesB": 99
+  },
+  {
+    "id": "q46",
+    "category": "weather",
+    "question": "맑은 날만 살기 vs 흐린 날만 살기",
+    "optionA": "맑은 날",
+    "optionB": "흐린 날",
+    "votesA": 166,
+    "votesB": 55
+  },
+  {
+    "id": "q47",
+    "category": "weather",
+    "question": "계절 없이 살기 vs 사계절이 뚜렷한 삶",
+    "optionA": "계절 없음",
+    "optionB": "사계절",
+    "votesA": 72,
+    "votesB": 139
+  },
+  {
+    "id": "q48",
+    "category": "weather",
+    "question": "무조건 단풍 가득한 가을만 살기 vs 벚꽃 가득한 봄만 살기",
+    "optionA": "가을",
+    "optionB": "봄",
+    "votesA": 99,
+    "votesB": 121
+  },
+  {
+    "id": "q49",
+    "category": "weather",
+    "question": "폭염 속 에어컨 없는 삶 vs 혹한 속 난방 없는 삶",
+    "optionA": "폭염",
+    "optionB": "혹한",
+    "votesA": 66,
+    "votesB": 137
+  },
+  {
+    "id": "q50",
+    "category": "weather",
+    "question": "출근길 비 맞기 vs 퇴근길 눈 맞기",
+    "optionA": "비 맞기",
+    "optionB": "눈 맞기",
+    "votesA": 115,
+    "votesB": 112
+  },
+  {
+    "id": "q51",
+    "category": "social",
+    "question": "모든 사람이 내 생각을 알기 vs 내가 모든 사람 생각 알기",
+    "optionA": "내 생각 공개",
+    "optionB": "남의 생각 읽기",
+    "votesA": 45,
+    "votesB": 234
+  },
+  {
+    "id": "q52",
+    "category": "social",
+    "question": "거짓말만 하는 세상 vs 진실만 말하는 세상",
+    "optionA": "거짓말만",
+    "optionB": "진실만",
+    "votesA": 67,
+    "votesB": 188
+  },
+  {
+    "id": "q53",
+    "category": "social",
+    "question": "모두에게 인기 있는 사람 vs 단 한 사람에게 진심인 사람",
+    "optionA": "인기인",
+    "optionB": "진심인",
+    "votesA": 92,
+    "votesB": 143
+  },
+  {
+    "id": "q54",
+    "category": "social",
+    "question": "매번 소개팅 실패 vs 소개팅 없이 평생 혼자",
+    "optionA": "실패라도 한다",
+    "optionB": "혼자",
+    "votesA": 118,
+    "votesB": 94
+  },
+  {
+    "id": "q55",
+    "category": "social",
+    "question": "평생 친구 한 명 vs 매년 친구 바뀌기",
+    "optionA": "한 명",
+    "optionB": "매년 교체",
+    "votesA": 103,
+    "votesB": 120
+  },
+  {
+    "id": "q56",
+    "category": "social",
+    "question": "다른 사람 모두 무시하기 vs 모든 사람에게 무시당하기",
+    "optionA": "내가 무시",
+    "optionB": "내가 무시당함",
+    "votesA": 68,
+    "votesB": 159
+  },
+  {
+    "id": "q57",
+    "category": "social",
+    "question": "SNS만으로 소통하기 vs 전화만으로 소통하기",
+    "optionA": "SNS",
+    "optionB": "전화",
+    "votesA": 120,
+    "votesB": 84
+  },
+  {
+    "id": "q58",
+    "category": "social",
+    "question": "말 너무 많은 친구 vs 말 너무 없는 친구",
+    "optionA": "많이 말함",
+    "optionB": "말 없음",
+    "votesA": 99,
+    "votesB": 111
+  },
+  {
+    "id": "q59",
+    "category": "social",
+    "question": "평생 솔로로 살기 vs 평생 인기 많지만 외롭기",
+    "optionA": "솔로",
+    "optionB": "인기있지만 외로움",
+    "votesA": 101,
+    "votesB": 115
+  },
+  {
+    "id": "q60",
+    "category": "social",
+    "question": "모두가 날 좋아하지만 나는 싫어함 vs 내가 모두를 좋아하지만 그들은 나를 싫어함",
+    "optionA": "다 날 좋아함",
+    "optionB": "내가 다 좋아함",
+    "votesA": 117,
+    "votesB": 87
+  },
+  {
+    "id": "q61",
+    "category": "money",
+    "question": "로또 1등 당첨 vs 꿈의 직업 얻기",
+    "optionA": "로또 1등",
+    "optionB": "꿈의 직업",
+    "votesA": 156,
+    "votesB": 123
+  },
+  {
+    "id": "q62",
+    "category": "money",
+    "question": "매달 300만원 고정 수입 vs 일시금 1억",
+    "optionA": "고정수입",
+    "optionB": "1억 일시금",
+    "votesA": 131,
+    "votesB": 115
+  },
+  {
+    "id": "q63",
+    "category": "money",
+    "question": "평생 세금 없음 vs 평생 통신비 없음",
+    "optionA": "세금 없음",
+    "optionB": "통신비 없음",
+    "votesA": 124,
+    "votesB": 101
+  },
+  {
+    "id": "q64",
+    "category": "money",
+    "question": "무지출 챌린지 1년 성공 vs 로또 3등 당첨",
+    "optionA": "무지출 1년",
+    "optionB": "로또 3등",
+    "votesA": 89,
+    "votesB": 133
+  },
+  {
+    "id": "q65",
+    "category": "money",
+    "question": "돈은 많지만 시간 없음 vs 시간은 많지만 돈 없음",
+    "optionA": "돈 많음",
+    "optionB": "시간 많음",
+    "votesA": 140,
+    "votesB": 97
+  },
+  {
+    "id": "q66",
+    "category": "money",
+    "question": "기본소득 월 50 vs 현재 수준 그대로",
+    "optionA": "기본소득",
+    "optionB": "지금처럼",
+    "votesA": 119,
+    "votesB": 112
+  },
+  {
+    "id": "q67",
+    "category": "money",
+    "question": "현금만 사용 가능 vs 카드만 사용 가능",
+    "optionA": "현금",
+    "optionB": "카드",
+    "votesA": 90,
+    "votesB": 121
+  },
+  {
+    "id": "q68",
+    "category": "money",
+    "question": "모든 돈이 코인으로만 존재 vs 모든 돈이 현금으로만 존재",
+    "optionA": "코인",
+    "optionB": "현금",
+    "votesA": 77,
+    "votesB": 138
+  },
+  {
+    "id": "q69",
+    "category": "money",
+    "question": "전재산 털고 창업하기 vs 안정된 직장 다니기",
+    "optionA": "창업",
+    "optionB": "직장",
+    "votesA": 106,
+    "votesB": 115
+  },
+  {
+    "id": "q70",
+    "category": "money",
+    "question": "평생 중고만 쓰기 vs 평생 새것만 쓰기 (부담 있음)",
+    "optionA": "중고",
+    "optionB": "새것",
+    "votesA": 103,
+    "votesB": 99
+  },
+  {
+    "id": "q71",
+    "category": "pet",
+    "question": "강아지와 평생 함께 vs 고양이와 평생 함께",
+    "optionA": "강아지",
+    "optionB": "고양이",
+    "votesA": 167,
+    "votesB": 145
+  },
+  {
+    "id": "q72",
+    "category": "pet",
+    "question": "말하는 강아지 vs 투명해지는 고양이",
+    "optionA": "말하는 강아지",
+    "optionB": "투명 고양이",
+    "votesA": 111,
+    "votesB": 119
+  },
+  {
+    "id": "q73",
+    "category": "pet",
+    "question": "반려동물과 대화 가능 vs 반려동물이 10년 더 살기",
+    "optionA": "대화 가능",
+    "optionB": "수명 연장",
+    "votesA": 122,
+    "votesB": 136
+  },
+  {
+    "id": "q74",
+    "category": "pet",
+    "question": "동물을 3마리까지 키울 수 있음 vs 단 한 마리만 키우지만 완전 교감",
+    "optionA": "3마리 키우기",
+    "optionB": "완전 교감 1마리",
+    "votesA": 95,
+    "votesB": 134
+  },
+  {
+    "id": "q75",
+    "category": "pet",
+    "question": "펫 호텔 무제한 이용권 vs 평생 사료 무료",
+    "optionA": "호텔 무제한",
+    "optionB": "사료 무료",
+    "votesA": 88,
+    "votesB": 141
+  },
+  {
+    "id": "q76",
+    "category": "pet",
+    "question": "반려동물과 여행 가능 vs 반려동물만 보는 TV 채널",
+    "optionA": "여행 가능",
+    "optionB": "전용 채널",
+    "votesA": 109,
+    "votesB": 104
+  },
+  {
+    "id": "q77",
+    "category": "pet",
+    "question": "반려동물이 감정을 표현하기 vs 내가 감정을 이해하기",
+    "optionA": "표현하기",
+    "optionB": "이해하기",
+    "votesA": 118,
+    "votesB": 117
+  },
+  {
+    "id": "q78",
+    "category": "pet",
+    "question": "펫 전용 스마트워치 vs 펫 전용 번역기",
+    "optionA": "스마트워치",
+    "optionB": "번역기",
+    "votesA": 91,
+    "votesB": 127
+  },
+  {
+    "id": "q79",
+    "category": "pet",
+    "question": "펫과 캠핑하기 vs 펫과 호텔 스테이",
+    "optionA": "캠핑",
+    "optionB": "호텔 스테이",
+    "votesA": 107,
+    "votesB": 113
+  },
+  {
+    "id": "q80",
+    "category": "pet",
+    "question": "반려동물 사진 무제한 인화권 vs 반려동물 전용 SNS 운영",
+    "optionA": "사진 인화",
+    "optionB": "SNS 운영",
+    "votesA": 96,
+    "votesB": 124
+  },
+  {
+    "id": "q81",
+    "category": "love",
+    "question": "첫사랑과 재회하기 vs 운명적인 새사랑 만나기",
+    "optionA": "첫사랑",
+    "optionB": "새사랑",
+    "votesA": 103,
+    "votesB": 156
+  },
+  {
+    "id": "q82",
+    "category": "love",
+    "question": "영화 같은 연애 1년 vs 평범한 연애 10년",
+    "optionA": "1년 영화",
+    "optionB": "10년 평범",
+    "votesA": 111,
+    "votesB": 117
+  },
+  {
+    "id": "q83",
+    "category": "love",
+    "question": "사랑만 있는 연애 vs 조건만 좋은 연애",
+    "optionA": "사랑만",
+    "optionB": "조건만",
+    "votesA": 128,
+    "votesB": 94
+  },
+  {
+    "id": "q84",
+    "category": "love",
+    "question": "썸만 타고 끝남 vs 소개팅만 하다 끝남",
+    "optionA": "썸",
+    "optionB": "소개팅",
+    "votesA": 101,
+    "votesB": 119
+  },
+  {
+    "id": "q85",
+    "category": "love",
+    "question": "장거리 연애 성공하기 vs 짧은 연애 매번 실패",
+    "optionA": "장거리 성공",
+    "optionB": "짧은 실패",
+    "votesA": 97,
+    "votesB": 124
+  },
+  {
+    "id": "q86",
+    "category": "love",
+    "question": "데이트 비용 100% 부담하기 vs 100% 상대가 내기",
+    "optionA": "내가 100%",
+    "optionB": "상대가 100%",
+    "votesA": 84,
+    "votesB": 138
+  },
+  {
+    "id": "q87",
+    "category": "love",
+    "question": "이상형과 연애 3개월 vs 평범한 사람과 평생",
+    "optionA": "이상형 3개월",
+    "optionB": "평범한 평생",
+    "votesA": 109,
+    "votesB": 113
+  },
+  {
+    "id": "q88",
+    "category": "love",
+    "question": "연애 상대의 과거 100% 알기 vs 아무것도 모른 채 사랑하기",
+    "optionA": "과거 다 알기",
+    "optionB": "모르고 사랑",
+    "votesA": 115,
+    "votesB": 102
+  },
+  {
+    "id": "q89",
+    "category": "love",
+    "question": "짝사랑만 10번 vs 연애는 하지만 항상 차임",
+    "optionA": "짝사랑 10번",
+    "optionB": "연애는 함",
+    "votesA": 92,
+    "votesB": 119
+  },
+  {
+    "id": "q90",
+    "category": "love",
+    "question": "공개연애만 가능 vs 절대 공개 불가",
+    "optionA": "공개연애",
+    "optionB": "비공개연애",
+    "votesA": 125,
+    "votesB": 103
+  },
+  {
+    "id": "q91",
+    "category": "study",
+    "question": "공부는 잘하는데 흥미 없음 vs 흥미는 있는데 못함",
+    "optionA": "잘하지만 재미없음",
+    "optionB": "못하지만 재밌음",
+    "votesA": 109,
+    "votesB": 123
+  },
+  {
+    "id": "q92",
+    "category": "study",
+    "question": "모든 시험 오픈북 vs 시험 대신 프로젝트 제출",
+    "optionA": "오픈북",
+    "optionB": "프로젝트",
+    "votesA": 115,
+    "votesB": 108
+  },
+  {
+    "id": "q93",
+    "category": "study",
+    "question": "모든 외국어 마스터하기 vs 전공 하나 완벽하게",
+    "optionA": "외국어 마스터",
+    "optionB": "전공 완벽",
+    "votesA": 132,
+    "votesB": 93
+  },
+  {
+    "id": "q94",
+    "category": "study",
+    "question": "온라인 수업만 가능 vs 오프라인 수업만 가능",
+    "optionA": "온라인",
+    "optionB": "오프라인",
+    "votesA": 98,
+    "votesB": 111
+  },
+  {
+    "id": "q95",
+    "category": "study",
+    "question": "새벽 공부형 인간 vs 밤샘 공부형 인간",
+    "optionA": "새벽형",
+    "optionB": "밤샘형",
+    "votesA": 113,
+    "votesB": 112
+  },
+  {
+    "id": "q96",
+    "category": "study",
+    "question": "무조건 A+ vs 노력한 만큼만 점수",
+    "optionA": "무조건 A+",
+    "optionB": "노력한 만큼",
+    "votesA": 124,
+    "votesB": 101
+  },
+  {
+    "id": "q97",
+    "category": "study",
+    "question": "필기 노트 무제한 제공 vs 실시간 질문 응답 기능",
+    "optionA": "노트 제공",
+    "optionB": "질문 응답",
+    "votesA": 90,
+    "votesB": 115
+  },
+  {
+    "id": "q98",
+    "category": "study",
+    "question": "모든 과목 단기간 완성 vs 원하는 과목만 장기 집중",
+    "optionA": "단기완성",
+    "optionB": "장기집중",
+    "votesA": 100,
+    "votesB": 112
+  },
+  {
+    "id": "q99",
+    "category": "study",
+    "question": "AI 튜터와 공부 vs 친구들과 그룹스터디",
+    "optionA": "AI 튜터",
+    "optionB": "그룹스터디",
+    "votesA": 103,
+    "votesB": 107
+  },
+  {
+    "id": "q100",
+    "category": "study",
+    "question": "시험 하루 전 전 과목 암기 완료 vs 시험 한 달 전 천천히 이해",
+    "optionA": "하루 전 암기",
+    "optionB": "한 달 전 이해",
+    "votesA": 98,
+    "votesB": 123
+  }
+]
+
+
+
+
+

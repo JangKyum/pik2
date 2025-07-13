@@ -1,0 +1,68 @@
+[
+  {
+    "id": "food",
+    "name": "음식",
+    "emoji": "🍽️",
+    "color": "orange"
+  },
+  {
+    "id": "lifestyle",
+    "name": "라이프스타일",
+    "emoji": "🌟",
+    "color": "purple"
+  },
+  {
+    "id": "superpower",
+    "name": "초능력",
+    "emoji": "⚡",
+    "color": "blue"
+  },
+  {
+    "id": "time",
+    "name": "시간",
+    "emoji": "⏰",
+    "color": "green"
+  },
+  {
+    "id": "weather",
+    "name": "날씨",
+    "emoji": "🌤️",
+    "color": "yellow"
+  },
+  {
+    "id": "social",
+    "name": "사회",
+    "emoji": "👥",
+    "color": "pink"
+  },
+  {
+    "id": "money",
+    "name": "돈",
+    "emoji": "💰",
+    "color": "emerald"
+  },
+  {
+    "id": "pet",
+    "name": "반려동물",
+    "emoji": "🐾",
+    "color": "amber"
+  },
+  {
+    "id": "love",
+    "name": "연애",
+    "emoji": "💕",
+    "color": "rose"
+  },
+  {
+    "id": "study",
+    "name": "공부",
+    "emoji": "📚",
+    "color": "indigo"
+  },
+  {
+    "id": "other",
+    "name": "기타",
+    "emoji": "📝",
+    "color": "gray"
+  }
+]
