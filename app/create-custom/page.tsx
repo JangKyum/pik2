@@ -2,9 +2,11 @@
 
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
-import { saveCustomQuestionSet, generateShareCode, getCustomQuestionSetById } from "../../lib/storage"
+import { generateShareCode } from "../../lib/storage"
+import { saveCustomQuestionSetHybrid } from "../../lib/supabase-storage"
 import type { Question, CustomQuestionSet } from "../../lib/storage"
 import categoriesData from "../../data/categories.json"
+import BackButton from "../../components/BackButton"
 
 export default function CreateCustomPage() {
   const [title, setTitle] = useState("")
@@ -17,6 +19,7 @@ export default function CreateCustomPage() {
     { category: "other", question: "", optionA: "", optionB: "" },
   ])
   const [isLoading, setIsLoading] = useState(false)
+  const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "success" | "error">("idle")
   const router = useRouter()
 
   // 월드컵 모드 토글 시 질문 수 조정
@@ -81,6 +84,7 @@ export default function CreateCustomPage() {
     if (!validateForm()) return
 
     setIsLoading(true)
+    setSaveStatus("saving")
 
     const questionSet: CustomQuestionSet = {
       id: Date.now().toString(),
@@ -101,11 +105,29 @@ export default function CreateCustomPage() {
       shareCode: generateShareCode(),
     }
 
-    saveCustomQuestionSet(questionSet)
-
-    setTimeout(() => {
-      router.push("/my-sets")
-    }, 500)
+    try {
+      const success = await saveCustomQuestionSetHybrid(questionSet)
+      
+      if (success) {
+        setSaveStatus("success")
+        setTimeout(() => {
+          router.push("/my-sets")
+        }, 1000)
+      } else {
+        setSaveStatus("error")
+        setTimeout(() => {
+          setSaveStatus("idle")
+        }, 3000)
+      }
+    } catch (error) {
+      console.error("Error saving question set:", error)
+      setSaveStatus("error")
+      setTimeout(() => {
+        setSaveStatus("idle")
+      }, 3000)
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   const getCategoryInfo = (categoryId: string) => {
@@ -118,16 +140,38 @@ export default function CreateCustomPage() {
         <div className="max-w-2xl mx-auto">
           {/* 헤더 */}
           <div className="flex items-center justify-between mb-8">
-            <button
-              onClick={() => router.push("/")}
-              className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
-            >
-              <span className="text-xl">←</span>
-              <span>홈으로</span>
-            </button>
+            <BackButton />
             <h1 className="text-xl font-bold text-gray-900">질문 세트 만들기</h1>
             <div className="w-16"></div>
           </div>
+
+          {/* 저장 상태 알림 */}
+          {saveStatus === "saving" && (
+            <div className="mb-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+              <div className="flex items-center gap-3">
+                <div className="w-5 h-5 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+                <span className="text-blue-800">질문 세트를 저장하고 있습니다...</span>
+              </div>
+            </div>
+          )}
+
+          {saveStatus === "success" && (
+            <div className="mb-4 p-4 bg-green-50 border border-green-200 rounded-lg">
+              <div className="flex items-center gap-3">
+                <span className="text-green-600 text-xl">✓</span>
+                <span className="text-green-800">질문 세트가 성공적으로 저장되었습니다!</span>
+              </div>
+            </div>
+          )}
+
+          {saveStatus === "error" && (
+            <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+              <div className="flex items-center gap-3">
+                <span className="text-red-600 text-xl">⚠</span>
+                <span className="text-red-800">저장 중 오류가 발생했습니다. 다시 시도해주세요.</span>
+              </div>
+            </div>
+          )}
 
           <div className="space-y-8">
             {/* 기본 정보 */}
@@ -202,23 +246,23 @@ export default function CreateCustomPage() {
                         <h3 className="text-sm font-medium text-gray-700 mb-3">토너먼트 라운드 수</h3>
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                           {[4, 8, 16, 32].map((rounds) => (
-                            <button
+                        <button
                               key={rounds}
                               type="button"
                               onClick={() => handleRoundsChange(rounds)}
-                              className={`
+                          className={`
                                 p-3 rounded-lg border-2 transition-all duration-200 text-center
-                                ${
+                            ${
                                   worldCupRounds === rounds
                                     ? "border-blue-500 bg-blue-500 text-white"
                                     : "border-gray-200 bg-white hover:border-blue-300 hover:bg-blue-50 text-gray-700"
-                                }
-                              `}
-                            >
+                            }
+                          `}
+                        >
                               <div className="font-semibold">{rounds}강</div>
                               <div className="text-xs mt-1">{rounds}개 질문</div>
-                            </button>
-                          ))}
+                        </button>
+                      ))}
                         </div>
                       </div>
                     </div>
@@ -234,13 +278,13 @@ export default function CreateCustomPage() {
                   질문 목록 ({questions.length}/{isWorldCup ? worldCupRounds : 50})
                 </h2>
                 {!isWorldCup && (
-                  <button
-                    onClick={addQuestion}
-                    disabled={questions.length >= 50}
-                    className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                  >
-                    질문 추가
-                  </button>
+                <button
+                  onClick={addQuestion}
+                  disabled={questions.length >= 50}
+                  className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                >
+                  질문 추가
+                </button>
                 )}
               </div>
 
@@ -252,15 +296,15 @@ export default function CreateCustomPage() {
                 </div>
               )}
 
-              <div className="space-y-6">
+              <div className="space-y-4">
                 {questions.map((question, index) => (
-                  <div key={index} className="p-4 border border-gray-200 rounded-xl">
+                  <div key={index} className="p-4 border border-gray-200 rounded-lg">
                     <div className="flex items-center justify-between mb-3">
-                      <span className="text-sm font-medium text-gray-700">질문 {index + 1}</span>
-                      {questions.length > 3 && !isWorldCup && (
+                      <h3 className="text-sm font-medium text-gray-700">질문 {index + 1}</h3>
+                      {!isWorldCup && questions.length > 3 && (
                         <button
                           onClick={() => removeQuestion(index)}
-                          className="text-red-500 hover:text-red-700 text-sm transition-colors"
+                          className="text-red-500 hover:text-red-700 text-sm"
                         >
                           삭제
                         </button>
@@ -268,29 +312,38 @@ export default function CreateCustomPage() {
                     </div>
 
                     <div className="space-y-3">
-                      <input
-                        type="text"
-                        value={question.question}
-                        onChange={(e) => updateQuestion(index, "question", e.target.value)}
-                        placeholder="질문을 입력하세요 (예: 치킨 vs 피자)"
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      />
+                      <div>
+                        <label className="block text-xs font-medium text-gray-600 mb-1">질문</label>
+                        <input
+                          type="text"
+                          value={question.question}
+                          onChange={(e) => updateQuestion(index, "question", e.target.value)}
+                          placeholder="예: 어떤 음식을 더 좋아하나요?"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        />
+                      </div>
 
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                        <input
-                          type="text"
-                          value={question.optionA}
-                          onChange={(e) => updateQuestion(index, "optionA", e.target.value)}
-                          placeholder="선택지 A (예: 치킨)"
-                          className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                        />
-                        <input
-                          type="text"
-                          value={question.optionB}
-                          onChange={(e) => updateQuestion(index, "optionB", e.target.value)}
-                          placeholder="선택지 B (예: 피자)"
-                          className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                        />
+                        <div>
+                          <label className="block text-xs font-medium text-gray-600 mb-1">선택지 A</label>
+                          <input
+                            type="text"
+                            value={question.optionA}
+                            onChange={(e) => updateQuestion(index, "optionA", e.target.value)}
+                            placeholder="예: 피자"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-medium text-gray-600 mb-1">선택지 B</label>
+                          <input
+                            type="text"
+                            value={question.optionB}
+                            onChange={(e) => updateQuestion(index, "optionB", e.target.value)}
+                            placeholder="예: 햄버거"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          />
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -299,11 +352,17 @@ export default function CreateCustomPage() {
             </div>
 
             {/* 저장 버튼 */}
-            <div className="flex justify-center">
+            <div className="flex gap-3">
+              <button
+                onClick={() => router.push("/")}
+                className="flex-1 px-6 py-3 border border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition-colors"
+              >
+                취소
+              </button>
               <button
                 onClick={handleSave}
                 disabled={!validateForm() || isLoading}
-                className="px-8 py-3 bg-blue-500 hover:bg-blue-600 text-white font-medium rounded-xl disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                className="flex-1 px-6 py-3 bg-blue-500 hover:bg-blue-600 disabled:bg-gray-400 text-white font-semibold rounded-xl transition-colors"
               >
                 {isLoading ? "저장 중..." : "질문 세트 저장"}
               </button>

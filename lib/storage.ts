@@ -120,54 +120,7 @@ export function getNextRoundQuestions(winners: Question[]): Question[] {
   return shuffleArray(winners)
 }
 
-// 커스텀 질문 세트 관리\
-export const getCustomQuestionSets = (): CustomQuestionSet[] => {
-  if (typeof window === "undefined") return []
-  const stored = localStorage.getItem("pik2-custom-sets")
-  return stored ? JSON.parse(stored) : []
-}
-
-export const saveCustomQuestionSet = (questionSet: CustomQuestionSet) => {
-  const sets = getCustomQuestionSets()
-  const existingIndex = sets.findIndex((s) => s.id === questionSet.id)
-
-  if (existingIndex !== -1) {
-    sets[existingIndex] = questionSet
-  } else {
-    sets.push(questionSet)
-  }
-
-  localStorage.setItem("pik2-custom-sets", JSON.stringify(sets))
-}
-
-export const getCustomQuestionSetById = (id: string): CustomQuestionSet | null => {
-  const sets = getCustomQuestionSets()
-  return sets.find((s) => s.id === id) || null
-}
-
-// 공유 코드 생성\
+// 공유 코드 생성
 export const generateShareCode = (): string => {
   return Math.random().toString(36).substring(2, 8).toUpperCase()
-}
-
-// 레거시 지원\
-export const getCurrentQuestion = (): string | null => {
-  if (typeof window === "undefined") return null
-  return localStorage.getItem("pik2-current-question")
-}
-
-export const setCurrentQuestion = (questionId: string) => {
-  if (typeof window === "undefined") return
-  localStorage.setItem("pik2-current-question", questionId)
-}
-
-export const getLastChoice = (): "A" | "B" | null => {
-  if (typeof window === "undefined") return null
-  const choice = localStorage.getItem("pik2-last-choice")
-  return choice as "A" | "B" | null
-}
-
-export const setLastChoice = (choice: "A" | "B") => {
-  if (typeof window === "undefined") return
-  localStorage.setItem("pik2-last-choice", choice)
 }

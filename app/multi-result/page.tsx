@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation"
 import ResultChart from "../../components/ResultChart"
 import { getCurrentSession, getStoredQuestions, clearCurrentSession } from "../../lib/storage"
 import type { GameSession, Question } from "../../lib/storage"
+import BackButton from "../../components/BackButton"
 
 export default function MultiResultPage() {
   const [session, setSession] = useState<GameSession | null>(null)
@@ -96,13 +97,7 @@ export default function MultiResultPage() {
           {/* 헤더 */}
           <div className="w-full max-w-4xl mx-auto mb-8">
             <div className="flex items-center justify-between mb-4">
-              <button
-                onClick={handleGoHome}
-                className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
-              >
-                <span className="text-xl">←</span>
-                <span>홈으로</span>
-              </button>
+              <BackButton>홈으로</BackButton>
               <h1 className="text-xl font-bold text-gray-900">전체 결과</h1>
               <button
                 onClick={() => setShowAllResults(false)}
@@ -196,14 +191,8 @@ export default function MultiResultPage() {
           {/* 헤더 */}
           <div className="w-full max-w-2xl mx-auto mb-8">
             <div className="flex items-center justify-between mb-4">
-              <button
-                onClick={handleGoHome}
-                className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
-              >
-                <span className="text-xl">←</span>
-                <span>홈으로</span>
-              </button>
-              <h1 className="text-xl font-bold text-gray-900">전체 결과</h1>
+              <BackButton>홈으로</BackButton>
+              <h1 className="text-xl font-bold text-gray-900">결과</h1>
               <button
                 onClick={() => setShowAllResults(true)}
                 className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white text-sm rounded-lg transition-colors"

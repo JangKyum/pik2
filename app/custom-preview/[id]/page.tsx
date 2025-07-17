@@ -2,8 +2,9 @@
 
 import { useState, useEffect } from "react"
 import { useRouter, useParams } from "next/navigation"
-import { getCustomQuestionSetById } from "../../../lib/storage"
+import { getCustomQuestionSetByIdFromDB } from "../../../lib/supabase-storage"
 import type { CustomQuestionSet } from "../../../lib/storage"
+import BackButton from "../../../components/BackButton"
 
 export default function CustomPreviewPage() {
   const [questionSet, setQuestionSet] = useState<CustomQuestionSet | null>(null)
@@ -13,20 +14,30 @@ export default function CustomPreviewPage() {
   const params = useParams()
 
   useEffect(() => {
-    const id = params.id as string
-    if (!id) {
-      router.push("/")
-      return
+    const fetchQuestionSet = async () => {
+      const id = params.id as string
+      if (!id) {
+        router.push("/")
+        return
+      }
+
+      try {
+        const set = await getCustomQuestionSetByIdFromDB(id)
+        if (!set) {
+          router.push("/")
+          return
+        }
+
+        setQuestionSet(set)
+      } catch (error) {
+        console.error("Error fetching question set:", error)
+        router.push("/")
+      } finally {
+        setIsLoading(false)
+      }
     }
 
-    const set = getCustomQuestionSetById(id)
-    if (!set) {
-      router.push("/")
-      return
-    }
-
-    setQuestionSet(set)
-    setIsLoading(false)
+    fetchQuestionSet()
   }, [params.id, router])
 
   const handleCopyShareCode = async () => {
@@ -84,13 +95,7 @@ export default function CustomPreviewPage() {
         <div className="max-w-2xl mx-auto">
           {/* 헤더 */}
           <div className="flex items-center justify-between mb-8">
-            <button
-              onClick={() => router.push("/my-sets")}
-              className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
-            >
-              <span className="text-xl">←</span>
-              <span>내 세트</span>
-            </button>
+            <BackButton href="/my-sets">질문 세트</BackButton>
             <h1 className="text-xl font-bold text-gray-900">질문 세트 미리보기</h1>
             <div className="w-16"></div>
           </div>

@@ -4,6 +4,7 @@ import type React from "react"
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
+import BackButton from "../../components/BackButton"
 
 export default function ShareInputPage() {
   const [shareCode, setShareCode] = useState("")
@@ -31,13 +32,7 @@ export default function ShareInputPage() {
           {/* 헤더 */}
           <div className="w-full max-w-md mx-auto mb-8">
             <div className="flex items-center justify-between">
-              <button
-                onClick={() => router.push("/")}
-                className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
-              >
-                <span className="text-xl">←</span>
-                <span>홈으로</span>
-              </button>
+              <BackButton>홈으로</BackButton>
               <h1 className="text-xl font-bold text-gray-900">공유 코드 입력</h1>
               <div className="w-16"></div>
             </div>

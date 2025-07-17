@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation"
 import { getQuestionsByCategory } from "../../lib/getRandomQuestion"
 import { saveCurrentSession } from "../../lib/storage"
 import categoriesData from "../../data/categories.json"
+import BackButton from "../../components/BackButton"
 
 export default function CategorySelectPage() {
   const [selectedCategory, setSelectedCategory] = useState<string>("")
@@ -62,13 +63,7 @@ export default function CategorySelectPage() {
         <div className="max-w-2xl mx-auto">
           {/* 헤더 */}
           <div className="flex items-center justify-between mb-8">
-            <button
-              onClick={() => router.push("/")}
-              className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
-            >
-              <span className="text-xl">←</span>
-              <span>홈으로</span>
-            </button>
+            <BackButton />
             <h1 className="text-xl font-bold text-gray-900">카테고리 선택</h1>
             <div className="w-16"></div>
           </div>

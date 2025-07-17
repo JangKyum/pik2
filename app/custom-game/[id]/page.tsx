@@ -4,7 +4,8 @@ import { useState, useEffect } from "react"
 import { useRouter, useParams } from "next/navigation"
 import QuestionCard from "../../../components/QuestionCard"
 import ChoiceButton from "../../../components/ChoiceButton"
-import { getCustomQuestionSetById, saveCurrentSession } from "../../../lib/storage"
+import { getCustomQuestionSetByIdFromDB } from "../../../lib/supabase-storage"
+import { saveCurrentSession } from "../../../lib/storage"
 import type { CustomQuestionSet, GameSession } from "../../../lib/storage"
 
 export default function CustomGamePage() {
@@ -17,20 +18,30 @@ export default function CustomGamePage() {
   const params = useParams()
 
   useEffect(() => {
-    const id = params.id as string
-    if (!id) {
-      router.push("/")
-      return
+    const fetchQuestionSet = async () => {
+      const id = params.id as string
+      if (!id) {
+        router.push("/")
+        return
+      }
+
+      try {
+        const set = await getCustomQuestionSetByIdFromDB(id)
+        if (!set) {
+          router.push("/")
+          return
+        }
+
+        setQuestionSet(set)
+      } catch (error) {
+        console.error("Error fetching question set:", error)
+        router.push("/")
+      } finally {
+        setIsLoading(false)
+      }
     }
 
-    const set = getCustomQuestionSetById(id)
-    if (!set) {
-      router.push("/")
-      return
-    }
-
-    setQuestionSet(set)
-    setIsLoading(false)
+    fetchQuestionSet()
   }, [params.id, router])
 
   const handleChoice = async (choice: "A" | "B") => {
@@ -143,7 +154,7 @@ export default function CustomGamePage() {
           <div className="w-full max-w-4xl mx-auto">
             <div className="flex flex-col md:flex-row md:items-center gap-4 md:gap-8">
               <div className="flex-1">
-                <ChoiceButton option={currentQuestion.optionA} choice="A" onClick={handleChoice} disabled={isSubmitting} />
+            <ChoiceButton option={currentQuestion.optionA} choice="A" onClick={handleChoice} disabled={isSubmitting} />
               </div>
               
               <div className="flex justify-center md:flex-shrink-0">
@@ -151,7 +162,7 @@ export default function CustomGamePage() {
               </div>
               
               <div className="flex-1">
-                <ChoiceButton option={currentQuestion.optionB} choice="B" onClick={handleChoice} disabled={isSubmitting} />
+            <ChoiceButton option={currentQuestion.optionB} choice="B" onClick={handleChoice} disabled={isSubmitting} />
               </div>
             </div>
           </div>

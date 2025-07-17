@@ -2,8 +2,9 @@
 
 import { useState, useEffect } from "react"
 import { useRouter, useParams } from "next/navigation"
-import { getCustomQuestionSets } from "../../../lib/storage"
+import { getCustomQuestionSetsFromDB } from "../../../lib/supabase-storage"
 import type { CustomQuestionSet } from "../../../lib/storage"
+import BackButton from "../../../components/BackButton"
 
 export default function SharePage() {
   const [questionSet, setQuestionSet] = useState<CustomQuestionSet | null>(null)
@@ -13,23 +14,28 @@ export default function SharePage() {
   const params = useParams()
 
   useEffect(() => {
-    const shareCode = params.code as string
-    if (!shareCode) {
-      router.push("/")
-      return
+    const fetchSet = async () => {
+      const shareCode = params.code as string
+      if (!shareCode) {
+        router.push("/")
+        return
+      }
+      try {
+        const allSets = await getCustomQuestionSetsFromDB()
+        const foundSet = allSets.find((set) => set.shareCode === shareCode.toUpperCase())
+        if (foundSet) {
+          setQuestionSet(foundSet)
+        } else {
+          setNotFound(true)
+        }
+      } catch (error) {
+        console.error("Error fetching question set:", error)
+        setNotFound(true)
+      } finally {
+        setIsLoading(false)
+      }
     }
-
-    // 공유 코드로 질문 세트 찾기
-    const allSets = getCustomQuestionSets()
-    const foundSet = allSets.find((set) => set.shareCode === shareCode.toUpperCase())
-
-    if (foundSet) {
-      setQuestionSet(foundSet)
-    } else {
-      setNotFound(true)
-    }
-
-    setIsLoading(false)
+    fetchSet()
   }, [params.code, router])
 
   const handleStartGame = () => {
@@ -88,13 +94,7 @@ export default function SharePage() {
         <div className="max-w-2xl mx-auto">
           {/* 헤더 */}
           <div className="flex items-center justify-between mb-8">
-            <button
-              onClick={() => router.push("/")}
-              className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
-            >
-              <span className="text-xl">←</span>
-              <span>홈으로</span>
-            </button>
+            <BackButton>홈으로</BackButton>
             <h1 className="text-xl font-bold text-gray-900">공유된 질문 세트</h1>
             <div className="w-16"></div>
           </div>

@@ -3,12 +3,8 @@
 import { useState, useEffect } from "react"
 import { useRouter, useParams } from "next/navigation"
 import ChoiceButton from "../../../components/ChoiceButton"
-import {
-  getCustomQuestionSetById,
-  saveCurrentSession,
-  createWorldCupBracket,
-  getNextRoundQuestions,
-} from "../../../lib/storage"
+import { getCustomQuestionSetByIdFromDB } from "../../../lib/supabase-storage"
+import { saveCurrentSession, createWorldCupBracket, getNextRoundQuestions } from "../../../lib/storage"
 import type { CustomQuestionSet, GameSession, Question } from "../../../lib/storage"
 
 export default function WorldCupGamePage() {
@@ -24,23 +20,30 @@ export default function WorldCupGamePage() {
   const params = useParams()
 
   useEffect(() => {
-    const id = params.id as string
-    if (!id) {
-      router.push("/")
-      return
+    const fetchSet = async () => {
+      const id = params.id as string
+      if (!id) {
+        router.push("/")
+        return
+      }
+      try {
+        const set = await getCustomQuestionSetByIdFromDB(id)
+        if (!set || !set.isWorldCup) {
+          router.push("/")
+          return
+        }
+        // 월드컵 브라켓 생성
+        const bracket = createWorldCupBracket(set.questions, set.worldCupRounds || 8)
+        setQuestionSet(set)
+        setRoundQuestions(bracket)
+      } catch (error) {
+        console.error("Error fetching question set:", error)
+        router.push("/")
+      } finally {
+        setIsLoading(false)
+      }
     }
-
-    const set = getCustomQuestionSetById(id)
-    if (!set || !set.isWorldCup) {
-      router.push("/")
-      return
-    }
-
-    // 월드컵 브라켓 생성
-    const bracket = createWorldCupBracket(set.questions, set.worldCupRounds || 8)
-    setQuestionSet(set)
-    setRoundQuestions(bracket)
-    setIsLoading(false)
+    fetchSet()
   }, [params.id, router])
 
   const getRoundName = (round: number, totalRounds: number) => {
@@ -222,28 +225,28 @@ export default function WorldCupGamePage() {
           <div className="w-full max-w-4xl mx-auto">
             <div className="flex flex-col md:flex-row md:items-center gap-4 md:gap-8">
               <div className="flex-1">
-                <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-200">
-                  <ChoiceButton
-                    option={currentQuestionA.optionA}
-                    choice="A"
-                    onClick={handleChoice}
-                    disabled={isSubmitting}
-                  />
+            <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-200">
+              <ChoiceButton
+                option={currentQuestionA.optionA}
+                choice="A"
+                onClick={handleChoice}
+                disabled={isSubmitting}
+              />
                 </div>
-              </div>
-              
+            </div>
+
               <div className="flex justify-center md:flex-shrink-0">
                 <div className="text-2xl font-bold text-gray-400 py-4">VS</div>
-              </div>
-              
+            </div>
+
               <div className="flex-1">
-                <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-200">
-                  <ChoiceButton
-                    option={currentQuestionB.optionB}
-                    choice="B"
-                    onClick={handleChoice}
-                    disabled={isSubmitting}
-                  />
+            <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-200">
+              <ChoiceButton
+                option={currentQuestionB.optionB}
+                choice="B"
+                onClick={handleChoice}
+                disabled={isSubmitting}
+              />
                 </div>
               </div>
             </div>

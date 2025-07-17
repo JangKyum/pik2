@@ -74,18 +74,30 @@ export default function HomePage() {
           </div>
 
           {/* 추가 링크 */}
-          <div className="mt-8 space-y-2">
+          <div className="mt-8 space-y-3">
             <button
               onClick={() => router.push("/my-sets")}
-              className="block text-gray-600 hover:text-gray-900 transition-colors text-sm underline"
+              className="
+                inline-flex items-center gap-2 px-4 py-2 
+                text-gray-600 hover:text-gray-900 
+                transition-colors text-sm font-medium
+                rounded-lg hover:bg-gray-100
+              "
             >
-              내가 만든 질문 세트 보기
+              <span className="text-lg">📋</span>
+              <span>질문 세트 보기</span>
             </button>
             <button
               onClick={() => router.push("/share-input")}
-              className="block text-gray-600 hover:text-gray-900 transition-colors text-sm underline"
+              className="
+                inline-flex items-center gap-2 px-4 py-2 
+                text-gray-600 hover:text-gray-900 
+                transition-colors text-sm font-medium
+                rounded-lg hover:bg-gray-100
+              "
             >
-              공유 코드로 질문 세트 찾기
+              <span className="text-lg">🔍</span>
+              <span>공유 코드로 질문 세트 찾기</span>
             </button>
           </div>
         </div>

@@ -6,6 +6,7 @@ import QuestionCard from "../../components/QuestionCard"
 import ChoiceButton from "../../components/ChoiceButton"
 import { getCurrentSession, saveCurrentSession, updateQuestionVotes } from "../../lib/storage"
 import type { GameSession } from "../../lib/storage"
+import BackButton from "../../components/BackButton"
 
 export default function MultiGamePage() {
   const [session, setSession] = useState<GameSession | null>(null)
@@ -78,12 +79,7 @@ export default function MultiGamePage() {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <p className="text-gray-600 mb-4">게임 세션을 찾을 수 없습니다.</p>
-          <button
-            onClick={() => router.push("/")}
-            className="px-6 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors"
-          >
-            홈으로 돌아가기
-          </button>
+          <BackButton>홈으로 돌아가기</BackButton>
         </div>
       </div>
     )
@@ -99,13 +95,7 @@ export default function MultiGamePage() {
           {/* 헤더 */}
           <div className="w-full max-w-4xl mx-auto mb-6">
             <div className="flex items-center justify-between mb-4">
-              <button
-                onClick={() => router.push("/")}
-                className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
-              >
-                <span className="text-xl">←</span>
-                <span>홈으로</span>
-              </button>
+              <BackButton />
               <h1 className="text-xl font-bold text-gray-900">Pik2</h1>
               <div className="text-sm text-gray-600">
                 {session.currentIndex + 1} / {session.questions.length}
@@ -130,7 +120,7 @@ export default function MultiGamePage() {
           <div className="w-full max-w-4xl mx-auto">
             <div className="flex flex-col md:flex-row md:items-center gap-4 md:gap-8">
               <div className="flex-1">
-                <ChoiceButton option={currentQuestion.optionA} choice="A" onClick={handleChoice} disabled={isSubmitting} />
+            <ChoiceButton option={currentQuestion.optionA} choice="A" onClick={handleChoice} disabled={isSubmitting} />
               </div>
               
               <div className="flex justify-center md:flex-shrink-0">
@@ -138,7 +128,7 @@ export default function MultiGamePage() {
               </div>
               
               <div className="flex-1">
-                <ChoiceButton option={currentQuestion.optionB} choice="B" onClick={handleChoice} disabled={isSubmitting} />
+            <ChoiceButton option={currentQuestion.optionB} choice="B" onClick={handleChoice} disabled={isSubmitting} />
               </div>
             </div>
           </div>

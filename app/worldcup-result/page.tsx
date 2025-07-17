@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
-import { getCurrentSession, getCustomQuestionSetById, clearCurrentSession } from "../../lib/storage"
+import { getCurrentSession, clearCurrentSession } from "../../lib/storage"
+import { getCustomQuestionSetByIdFromDB } from "../../lib/supabase-storage"
 import type { GameSession, CustomQuestionSet } from "../../lib/storage"
 
 export default function WorldCupResultPage() {
@@ -12,22 +13,28 @@ export default function WorldCupResultPage() {
   const router = useRouter()
 
   useEffect(() => {
-    const currentSession = getCurrentSession()
-
-    if (!currentSession || currentSession.type !== "worldcup" || !currentSession.isCompleted) {
-      router.push("/")
-      return
+    const fetchData = async () => {
+      const currentSession = getCurrentSession()
+      if (!currentSession || currentSession.type !== "worldcup" || !currentSession.isCompleted) {
+        router.push("/")
+        return
+      }
+      try {
+        const set = currentSession.customSetId ? await getCustomQuestionSetByIdFromDB(currentSession.customSetId) : null
+        if (!set) {
+          router.push("/")
+          return
+        }
+        setSession(currentSession)
+        setQuestionSet(set)
+      } catch (error) {
+        console.error("Error fetching question set:", error)
+        router.push("/")
+      } finally {
+        setIsLoading(false)
+      }
     }
-
-    const set = currentSession.customSetId ? getCustomQuestionSetById(currentSession.customSetId) : null
-    if (!set) {
-      router.push("/")
-      return
-    }
-
-    setSession(currentSession)
-    setQuestionSet(set)
-    setIsLoading(false)
+    fetchData()
   }, [router])
 
   const handlePlayAgain = () => {
