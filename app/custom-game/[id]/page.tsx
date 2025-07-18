@@ -4,6 +4,7 @@ import { useState, useEffect } from "react"
 import { useRouter, useParams } from "next/navigation"
 import QuestionCard from "../../../components/QuestionCard"
 import ChoiceButton from "../../../components/ChoiceButton"
+import BackButton from "../../../components/BackButton"
 import { getCustomQuestionSetByIdFromDB } from "../../../lib/supabase-storage"
 import { saveCurrentSession } from "../../../lib/storage"
 import type { CustomQuestionSet, GameSession } from "../../../lib/storage"
@@ -19,25 +20,25 @@ export default function CustomGamePage() {
 
   useEffect(() => {
     const fetchQuestionSet = async () => {
-      const id = params.id as string
-      if (!id) {
-        router.push("/")
-        return
-      }
+    const id = params.id as string
+    if (!id) {
+      router.push("/")
+      return
+    }
 
       try {
         const set = await getCustomQuestionSetByIdFromDB(id)
-        if (!set) {
-          router.push("/")
-          return
-        }
+    if (!set) {
+      router.push("/")
+      return
+    }
 
-        setQuestionSet(set)
+    setQuestionSet(set)
       } catch (error) {
         console.error("Error fetching question set:", error)
         router.push("/")
       } finally {
-        setIsLoading(false)
+    setIsLoading(false)
       }
     }
 
@@ -74,12 +75,12 @@ export default function CustomGamePage() {
 
       setTimeout(() => {
         router.push("/custom-result")
-      }, 800)
+      }, 300)
     } else {
       setCurrentIndex(nextIndex)
       setTimeout(() => {
         setIsSubmitting(false)
-      }, 500)
+      }, 200)
     }
   }
 
@@ -120,13 +121,9 @@ export default function CustomGamePage() {
           {/* 헤더 */}
           <div className="w-full max-w-4xl mx-auto mb-6">
             <div className="flex items-center justify-between mb-4">
-              <button
-                onClick={() => router.push(`/custom-preview/${questionSet.id}`)}
-                className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
-              >
-                <span className="text-xl">←</span>
-                <span>돌아가기</span>
-              </button>
+              <BackButton href={`/custom-preview/${questionSet.id}`}>
+                돌아가기
+              </BackButton>
               <div className="text-center">
                 <h1 className="text-lg font-bold text-gray-900">{questionSet.title}</h1>
                 <p className="text-sm text-gray-600">

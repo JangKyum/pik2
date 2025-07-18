@@ -14,24 +14,24 @@ export default function WorldCupResultPage() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const currentSession = getCurrentSession()
-      if (!currentSession || currentSession.type !== "worldcup" || !currentSession.isCompleted) {
-        router.push("/")
-        return
-      }
+    const currentSession = getCurrentSession()
+    if (!currentSession || currentSession.type !== "worldcup" || !currentSession.isCompleted) {
+      router.push("/")
+      return
+    }
       try {
         const set = currentSession.customSetId ? await getCustomQuestionSetByIdFromDB(currentSession.customSetId) : null
-        if (!set) {
-          router.push("/")
-          return
-        }
-        setSession(currentSession)
-        setQuestionSet(set)
+    if (!set) {
+      router.push("/")
+      return
+    }
+    setSession(currentSession)
+    setQuestionSet(set)
       } catch (error) {
         console.error("Error fetching question set:", error)
         router.push("/")
       } finally {
-        setIsLoading(false)
+    setIsLoading(false)
       }
     }
     fetchData()

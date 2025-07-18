@@ -15,24 +15,24 @@ export default function SharePage() {
 
   useEffect(() => {
     const fetchSet = async () => {
-      const shareCode = params.code as string
-      if (!shareCode) {
-        router.push("/")
-        return
-      }
+    const shareCode = params.code as string
+    if (!shareCode) {
+      router.push("/")
+      return
+    }
       try {
         const allSets = await getCustomQuestionSetsFromDB()
-        const foundSet = allSets.find((set) => set.shareCode === shareCode.toUpperCase())
-        if (foundSet) {
-          setQuestionSet(foundSet)
-        } else {
-          setNotFound(true)
-        }
+    const foundSet = allSets.find((set) => set.shareCode === shareCode.toUpperCase())
+    if (foundSet) {
+      setQuestionSet(foundSet)
+    } else {
+      setNotFound(true)
+    }
       } catch (error) {
         console.error("Error fetching question set:", error)
         setNotFound(true)
       } finally {
-        setIsLoading(false)
+    setIsLoading(false)
       }
     }
     fetchSet()

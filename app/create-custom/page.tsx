@@ -115,10 +115,10 @@ export default function CreateCustomPage() {
         }, 1000)
       } else {
         setSaveStatus("error")
-        setTimeout(() => {
+    setTimeout(() => {
           setSaveStatus("idle")
         }, 3000)
-      }
+  }
     } catch (error) {
       console.error("Error saving question set:", error)
       setSaveStatus("error")
@@ -314,35 +314,35 @@ export default function CreateCustomPage() {
                     <div className="space-y-3">
                       <div>
                         <label className="block text-xs font-medium text-gray-600 mb-1">질문</label>
-                        <input
-                          type="text"
-                          value={question.question}
-                          onChange={(e) => updateQuestion(index, "question", e.target.value)}
+                      <input
+                        type="text"
+                        value={question.question}
+                        onChange={(e) => updateQuestion(index, "question", e.target.value)}
                           placeholder="예: 어떤 음식을 더 좋아하나요?"
                           className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                        />
+                      />
                       </div>
 
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                         <div>
                           <label className="block text-xs font-medium text-gray-600 mb-1">선택지 A</label>
-                          <input
-                            type="text"
-                            value={question.optionA}
-                            onChange={(e) => updateQuestion(index, "optionA", e.target.value)}
+                        <input
+                          type="text"
+                          value={question.optionA}
+                          onChange={(e) => updateQuestion(index, "optionA", e.target.value)}
                             placeholder="예: 피자"
                             className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                          />
+                        />
                         </div>
                         <div>
                           <label className="block text-xs font-medium text-gray-600 mb-1">선택지 B</label>
-                          <input
-                            type="text"
-                            value={question.optionB}
-                            onChange={(e) => updateQuestion(index, "optionB", e.target.value)}
+                        <input
+                          type="text"
+                          value={question.optionB}
+                          onChange={(e) => updateQuestion(index, "optionB", e.target.value)}
                             placeholder="예: 햄버거"
                             className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                          />
+                        />
                         </div>
                       </div>
                     </div>
@@ -359,14 +359,14 @@ export default function CreateCustomPage() {
               >
                 취소
               </button>
-              <button
-                onClick={handleSave}
+            <button
+              onClick={handleSave}
                 disabled={!validateForm() || isLoading}
                 className="flex-1 px-6 py-3 bg-blue-500 hover:bg-blue-600 disabled:bg-gray-400 text-white font-semibold rounded-xl transition-colors"
-              >
+            >
                 {isLoading ? "저장 중..." : "질문 세트 저장"}
               </button>
-            </div>
+                </div>
           </div>
         </div>
       </div>

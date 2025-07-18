@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
+import BackButton from "../../components/BackButton"
 import { getCurrentSession, clearCurrentSession } from "../../lib/storage"
 import { getCustomQuestionSetByIdFromDB } from "../../lib/supabase-storage"
 import type { GameSession, CustomQuestionSet } from "../../lib/storage"
@@ -67,12 +68,9 @@ export default function CustomResultPage() {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <p className="text-gray-600 mb-4">결과를 찾을 수 없습니다.</p>
-          <button
-            onClick={handleGoHome}
-            className="px-6 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors"
-          >
+          <BackButton className="px-6 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors">
             홈으로 돌아가기
-          </button>
+          </BackButton>
         </div>
       </div>
     )
@@ -84,13 +82,9 @@ export default function CustomResultPage() {
         <div className="max-w-4xl mx-auto">
           {/* 헤더 */}
           <div className="flex items-center justify-between mb-8">
-            <button
-              onClick={handleGoHome}
-              className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
-            >
-              <span className="text-xl">←</span>
-              <span>홈으로</span>
-            </button>
+            <BackButton>
+              홈으로
+            </BackButton>
             <div className="text-center">
               <h1 className="text-2xl font-bold text-gray-900">{questionSet.title}</h1>
               <p className="text-sm text-gray-600">전체 결과</p>
@@ -143,8 +137,8 @@ export default function CustomResultPage() {
                       </div>
 
                       {/* 질문 내용 */}
-                      <div className="flex-1">
-                        <h3 className="text-lg font-semibold text-gray-900 mb-4">{question.question}</h3>
+                      <div className="flex-1 min-w-0">
+                        <h3 className="text-lg font-semibold text-gray-900 mb-4 break-words leading-relaxed">{question.question}</h3>
 
                         {/* 선택지들 */}
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -154,20 +148,22 @@ export default function CustomResultPage() {
                             ${isChoiceA ? "border-blue-500 bg-blue-50" : "border-gray-200 bg-gray-50"}
                           `}
                           >
-                            <div className="flex items-center gap-3">
+                            <div className="flex items-start gap-3">
                               <div
                                 className={`
-                                w-6 h-6 rounded-full flex items-center justify-center text-sm font-bold
+                                flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-sm font-bold
                                 ${isChoiceA ? "bg-blue-500 text-white" : "bg-gray-300 text-gray-600"}
                               `}
                               >
                                 A
                               </div>
-                              <span className={`font-medium ${isChoiceA ? "text-blue-900" : "text-gray-700"}`}>
-                                {question.optionA}
-                              </span>
+                              <div className="flex-1 min-w-0">
+                                <span className={`font-medium ${isChoiceA ? "text-blue-900" : "text-gray-700"} break-words`}>
+                                  {question.optionA}
+                                </span>
+                              </div>
                               {isChoiceA && (
-                                <span className="ml-auto px-2 py-1 bg-blue-500 text-white text-xs rounded-full font-medium">
+                                <span className="flex-shrink-0 ml-2 px-2 py-1 bg-blue-500 text-white text-xs rounded-full font-medium whitespace-nowrap">
                                   내 선택
                                 </span>
                               )}
@@ -180,20 +176,22 @@ export default function CustomResultPage() {
                             ${!isChoiceA ? "border-gray-900 bg-gray-100" : "border-gray-200 bg-gray-50"}
                           `}
                           >
-                            <div className="flex items-center gap-3">
+                            <div className="flex items-start gap-3">
                               <div
                                 className={`
-                                w-6 h-6 rounded-full flex items-center justify-center text-sm font-bold
+                                flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-sm font-bold
                                 ${!isChoiceA ? "bg-gray-900 text-white" : "bg-gray-300 text-gray-600"}
                               `}
                               >
                                 B
                               </div>
-                              <span className={`font-medium ${!isChoiceA ? "text-gray-900" : "text-gray-700"}`}>
-                                {question.optionB}
-                              </span>
+                              <div className="flex-1 min-w-0">
+                                <span className={`font-medium ${!isChoiceA ? "text-gray-900" : "text-gray-700"} break-words`}>
+                                  {question.optionB}
+                                </span>
+                              </div>
                               {!isChoiceA && (
-                                <span className="ml-auto px-2 py-1 bg-gray-900 text-white text-xs rounded-full font-medium">
+                                <span className="flex-shrink-0 ml-2 px-2 py-1 bg-gray-900 text-white text-xs rounded-full font-medium whitespace-nowrap">
                                   내 선택
                                 </span>
                               )}

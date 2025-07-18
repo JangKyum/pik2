@@ -21,26 +21,26 @@ export default function WorldCupGamePage() {
 
   useEffect(() => {
     const fetchSet = async () => {
-      const id = params.id as string
-      if (!id) {
-        router.push("/")
-        return
-      }
+    const id = params.id as string
+    if (!id) {
+      router.push("/")
+      return
+    }
       try {
         const set = await getCustomQuestionSetByIdFromDB(id)
-        if (!set || !set.isWorldCup) {
-          router.push("/")
-          return
-        }
-        // 월드컵 브라켓 생성
-        const bracket = createWorldCupBracket(set.questions, set.worldCupRounds || 8)
-        setQuestionSet(set)
-        setRoundQuestions(bracket)
+    if (!set || !set.isWorldCup) {
+      router.push("/")
+      return
+    }
+    // 월드컵 브라켓 생성
+    const bracket = createWorldCupBracket(set.questions, set.worldCupRounds || 8)
+    setQuestionSet(set)
+    setRoundQuestions(bracket)
       } catch (error) {
         console.error("Error fetching question set:", error)
         router.push("/")
       } finally {
-        setIsLoading(false)
+    setIsLoading(false)
       }
     }
     fetchSet()
