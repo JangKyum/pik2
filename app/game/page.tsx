@@ -16,14 +16,7 @@ export default function GamePage() {
   const router = useRouter()
 
   useEffect(() => {
-    const currentQuestionId = getCurrentQuestion()
-
-    if (!currentQuestionId) {
-      router.push("/")
-      return
-    }
-
-    const currentQuestion = getQuestionById(currentQuestionId)
+    const currentQuestion = getCurrentQuestion()
 
     if (!currentQuestion) {
       router.push("/")

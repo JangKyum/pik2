@@ -124,3 +124,35 @@ export function getNextRoundQuestions(winners: Question[]): Question[] {
 export const generateShareCode = (): string => {
   return Math.random().toString(36).substring(2, 8).toUpperCase()
 }
+
+// 현재 질문 관련 함수들
+export const getCurrentQuestion = (): Question | null => {
+  const session = getCurrentSession()
+  if (!session || session.currentIndex >= session.questions.length) {
+    return null
+  }
+  return session.questions[session.currentIndex]
+}
+
+export const setCurrentQuestion = (questionId: string) => {
+  const session = getCurrentSession()
+  if (session) {
+    const questionIndex = session.questions.findIndex(q => q.id === questionId)
+    if (questionIndex !== -1) {
+      session.currentIndex = questionIndex
+      saveCurrentSession(session)
+    }
+  }
+}
+
+// 마지막 선택 관련 함수들
+export const getLastChoice = (): "A" | "B" | null => {
+  if (typeof window === "undefined") return null
+  const stored = localStorage.getItem("pik2-last-choice")
+  return stored as "A" | "B" | null
+}
+
+export const setLastChoice = (choice: "A" | "B") => {
+  if (typeof window === "undefined") return
+  localStorage.setItem("pik2-last-choice", choice)
+}

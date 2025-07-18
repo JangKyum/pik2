@@ -15,17 +15,17 @@ export default function ResultPage() {
   const router = useRouter()
 
   useEffect(() => {
-    const currentQuestionId = getCurrentQuestion()
+    const currentQuestion = getCurrentQuestion()
     const lastChoice = getLastChoice()
 
-    if (!currentQuestionId || !lastChoice) {
+    if (!currentQuestion || !lastChoice) {
       router.push("/")
       return
     }
 
     // 저장된 질문들에서 현재 질문 찾기 (업데이트된 투표 수 포함)
     const storedQuestions = getStoredQuestions()
-    const updatedQuestion = storedQuestions.find((q) => q.id === currentQuestionId)
+    const updatedQuestion = storedQuestions.find((q) => q.id === currentQuestion.id)
 
     if (!updatedQuestion) {
       router.push("/")

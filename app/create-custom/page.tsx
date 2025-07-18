@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, Suspense } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { generateShareCode } from "../../lib/storage"
 import { saveCustomQuestionSetHybrid, getCustomQuestionSetByIdFromDB } from "../../lib/supabase-storage"
@@ -8,7 +8,7 @@ import type { Question, CustomQuestionSet } from "../../lib/storage"
 import categoriesData from "../../data/categories.json"
 import BackButton from "../../components/BackButton"
 
-export default function CreateCustomPage() {
+function CreateCustomContent() {
   const [title, setTitle] = useState("")
   const [category, setCategory] = useState("other") // 질문 세트 전체 카테고리
   const [isWorldCup, setIsWorldCup] = useState(false)
@@ -424,5 +424,20 @@ export default function CreateCustomPage() {
         </div>
       </div>
     </div>
+  )
+}
+
+export default function CreateCustomPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-8 h-8 border-2 border-gray-900 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-600">불러오는 중...</p>
+        </div>
+      </div>
+    }>
+      <CreateCustomContent />
+    </Suspense>
   )
 }
