@@ -1,9 +1,9 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import { generateShareCode } from "../../lib/storage"
-import { saveCustomQuestionSetHybrid } from "../../lib/supabase-storage"
+import { saveCustomQuestionSetHybrid, getCustomQuestionSetByIdFromDB } from "../../lib/supabase-storage"
 import type { Question, CustomQuestionSet } from "../../lib/storage"
 import categoriesData from "../../data/categories.json"
 import BackButton from "../../components/BackButton"
@@ -19,8 +19,57 @@ export default function CreateCustomPage() {
     { category: "other", question: "", optionA: "", optionB: "" },
   ])
   const [isLoading, setIsLoading] = useState(false)
+  const [isEditing, setIsEditing] = useState(false)
+  const [editingId, setEditingId] = useState<string | null>(null)
   const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "success" | "error">("idle")
   const router = useRouter()
+  const searchParams = useSearchParams()
+
+  // URL에서 edit 파라미터 확인
+  useEffect(() => {
+    const editId = searchParams.get('edit')
+    if (editId) {
+      setIsEditing(true)
+      setEditingId(editId)
+      loadExistingQuestionSet(editId)
+    }
+  }, [searchParams])
+
+  // 기존 질문 세트 정보 저장 (수정 시 사용)
+  const [originalQuestionSet, setOriginalQuestionSet] = useState<CustomQuestionSet | null>(null)
+
+  // 기존 질문 세트 로드
+  const loadExistingQuestionSet = async (id: string) => {
+    try {
+      console.log('Loading question set with ID:', id) // 디버깅용
+      const questionSet = await getCustomQuestionSetByIdFromDB(id)
+      console.log('Loaded question set:', questionSet) // 디버깅용
+      
+      if (questionSet) {
+        setOriginalQuestionSet(questionSet) // 원본 데이터 저장
+        setTitle(questionSet.title)
+        setCategory(questionSet.category)
+        setIsWorldCup(questionSet.isWorldCup)
+        if (questionSet.worldCupRounds) {
+          setWorldCupRounds(questionSet.worldCupRounds)
+        }
+        
+        // 질문 데이터 변환 (votesA, votesB 제거)
+        const questionsWithoutVotes = questionSet.questions.map(q => ({
+          category: q.category,
+          question: q.question,
+          optionA: q.optionA,
+          optionB: q.optionB
+        }))
+        setQuestions(questionsWithoutVotes)
+        console.log('Set form data for editing') // 디버깅용
+      } else {
+        console.log('Question set not found') // 디버깅용
+      }
+    } catch (error) {
+      console.error("Error loading question set:", error)
+    }
+  }
 
   // 월드컵 모드 토글 시 질문 수 조정
   const handleWorldCupToggle = (checked: boolean) => {
@@ -87,11 +136,11 @@ export default function CreateCustomPage() {
     setSaveStatus("saving")
 
     const questionSet: CustomQuestionSet = {
-      id: Date.now().toString(),
+      id: isEditing && editingId ? editingId : Date.now().toString(),
       title: title.trim(),
       category, // 질문 세트 전체 카테고리 사용
       questions: questions.map((q, index) => ({
-        id: `${Date.now()}_${index}`,
+        id: isEditing && editingId ? `${editingId}_${index}` : `${Date.now()}_${index}`,
         category, // 질문 세트 전체 카테고리를 모든 질문에 적용
         question: q.question.trim(),
         optionA: q.optionA.trim(),
@@ -101,9 +150,11 @@ export default function CreateCustomPage() {
       })),
       isWorldCup,
       worldCupRounds: isWorldCup ? worldCupRounds : undefined,
-      createdAt: new Date().toISOString(),
-      shareCode: generateShareCode(),
+      createdAt: isEditing && originalQuestionSet ? originalQuestionSet.createdAt : new Date().toISOString(),
+      shareCode: isEditing && originalQuestionSet ? originalQuestionSet.shareCode : generateShareCode(),
     }
+
+    console.log('Saving question set:', questionSet) // 디버깅용
 
     try {
       const success = await saveCustomQuestionSetHybrid(questionSet)
@@ -115,10 +166,10 @@ export default function CreateCustomPage() {
         }, 1000)
       } else {
         setSaveStatus("error")
-    setTimeout(() => {
+        setTimeout(() => {
           setSaveStatus("idle")
         }, 3000)
-  }
+      }
     } catch (error) {
       console.error("Error saving question set:", error)
       setSaveStatus("error")
@@ -141,7 +192,9 @@ export default function CreateCustomPage() {
           {/* 헤더 */}
           <div className="flex items-center justify-between mb-8">
             <BackButton />
-            <h1 className="text-xl font-bold text-gray-900">질문 세트 만들기</h1>
+            <h1 className="text-xl font-bold text-gray-900">
+              {isEditing ? "질문 세트 수정하기" : "질문 세트 만들기"}
+            </h1>
             <div className="w-16"></div>
           </div>
 
@@ -364,7 +417,7 @@ export default function CreateCustomPage() {
                 disabled={!validateForm() || isLoading}
                 className="flex-1 px-6 py-3 bg-blue-500 hover:bg-blue-600 disabled:bg-gray-400 text-white font-semibold rounded-xl transition-colors"
             >
-                {isLoading ? "저장 중..." : "질문 세트 저장"}
+                {isLoading ? "저장 중..." : (isEditing ? "수정 완료" : "질문 세트 저장")}
               </button>
                 </div>
           </div>

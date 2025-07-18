@@ -4,12 +4,13 @@ import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import BackButton from "../../components/BackButton"
 import { getCurrentSession, clearCurrentSession } from "../../lib/storage"
-import { getCustomQuestionSetByIdFromDB } from "../../lib/supabase-storage"
+import { getCustomQuestionSetByIdFromDB, getQuestionSetVotesFromDB } from "../../lib/supabase-storage"
 import type { GameSession, CustomQuestionSet } from "../../lib/storage"
 
 export default function CustomResultPage() {
   const [session, setSession] = useState<GameSession | null>(null)
   const [questionSet, setQuestionSet] = useState<CustomQuestionSet | null>(null)
+  const [voteStats, setVoteStats] = useState<Record<string, { votesA: number; votesB: number }>>({})
   const [isLoading, setIsLoading] = useState(true)
   const router = useRouter()
 
@@ -31,6 +32,10 @@ export default function CustomResultPage() {
 
         setSession(currentSession)
         setQuestionSet(set)
+
+        // Fetch vote statistics for all questions
+        const voteStats = await getQuestionSetVotesFromDB(set.id)
+        setVoteStats(voteStats)
       } catch (error) {
         console.error("Error fetching question set:", error)
         router.push("/")
@@ -95,28 +100,7 @@ export default function CustomResultPage() {
           {/* 요약 통계 */}
           <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 mb-8">
             <h3 className="text-lg font-semibold text-gray-900 mb-4 text-center">🎉 게임 완료!</h3>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <div className="text-center p-4 bg-blue-50 rounded-xl">
-                <div className="text-2xl font-bold text-blue-600">
-                  {session.answers.filter((a) => a.choice === "A").length}
-                </div>
-                <div className="text-sm text-blue-800">A 선택</div>
-              </div>
-              <div className="text-center p-4 bg-gray-50 rounded-xl">
-                <div className="text-2xl font-bold text-gray-600">
-                  {session.answers.filter((a) => a.choice === "B").length}
-                </div>
-                <div className="text-sm text-gray-800">B 선택</div>
-              </div>
-              <div className="text-center p-4 bg-green-50 rounded-xl">
-                <div className="text-2xl font-bold text-green-600">{session.answers.length}</div>
-                <div className="text-sm text-green-800">총 질문</div>
-              </div>
-              <div className="text-center p-4 bg-purple-50 rounded-xl">
-                <div className="text-2xl font-bold text-purple-600">100%</div>
-                <div className="text-sm text-purple-800">완료율</div>
-              </div>
-            </div>
+            <p className="text-center text-gray-600">모든 질문에 답변하셨습니다.</p>
           </div>
 
           {/* 전체 결과를 한번에 표시 */}
@@ -127,6 +111,7 @@ export default function CustomResultPage() {
               {session.answers.map((answer, index) => {
                 const question = session.questions[index]
                 const isChoiceA = answer.choice === "A"
+                const questionVotes = voteStats[question.id] || { votesA: 0, votesB: 0 }
 
                 return (
                   <div key={answer.questionId} className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
@@ -168,6 +153,30 @@ export default function CustomResultPage() {
                                 </span>
                               )}
                             </div>
+                            {/* A 선택 통계 */}
+                            <div className="mt-3 pt-3 border-t border-gray-200">
+                              <div className="flex items-center justify-between text-xs">
+                                <span className="text-gray-600">선택 비율</span>
+                                <span className="font-medium text-blue-600">
+                                  {questionVotes.votesA + questionVotes.votesB > 0 
+                                    ? Math.round((questionVotes.votesA / (questionVotes.votesA + questionVotes.votesB)) * 100) 
+                                    : 0}%
+                                </span>
+                              </div>
+                              <div className="w-full bg-gray-200 rounded-full h-1.5 mt-1">
+                                <div 
+                                  className="bg-blue-500 h-1.5 rounded-full transition-all duration-500"
+                                  style={{ 
+                                    width: `${questionVotes.votesA + questionVotes.votesB > 0 
+                                      ? (questionVotes.votesA / (questionVotes.votesA + questionVotes.votesB)) * 100 
+                                      : 0}%` 
+                                  }}
+                                ></div>
+                              </div>
+                              <div className="text-xs text-gray-500 mt-1">
+                                {questionVotes.votesA}명 선택
+                              </div>
+                            </div>
                           </div>
 
                           <div
@@ -195,6 +204,30 @@ export default function CustomResultPage() {
                                   내 선택
                                 </span>
                               )}
+                            </div>
+                            {/* B 선택 통계 */}
+                            <div className="mt-3 pt-3 border-t border-gray-200">
+                              <div className="flex items-center justify-between text-xs">
+                                <span className="text-gray-600">선택 비율</span>
+                                <span className="font-medium text-gray-600">
+                                  {questionVotes.votesA + questionVotes.votesB > 0 
+                                    ? Math.round((questionVotes.votesB / (questionVotes.votesA + questionVotes.votesB)) * 100) 
+                                    : 0}%
+                                </span>
+                              </div>
+                              <div className="w-full bg-gray-200 rounded-full h-1.5 mt-1">
+                                <div 
+                                  className="bg-gray-900 h-1.5 rounded-full transition-all duration-500"
+                                  style={{ 
+                                    width: `${questionVotes.votesA + questionVotes.votesB > 0 
+                                      ? (questionVotes.votesB / (questionVotes.votesA + questionVotes.votesB)) * 100 
+                                      : 0}%` 
+                                  }}
+                                ></div>
+                              </div>
+                              <div className="text-xs text-gray-500 mt-1">
+                                {questionVotes.votesB}명 선택
+                              </div>
                             </div>
                           </div>
                         </div>

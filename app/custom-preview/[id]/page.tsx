@@ -184,20 +184,33 @@ export default function CustomPreviewPage() {
 
           {/* 질문 목록 */}
           <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-200">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">질문 목록</h3>
-            <div className="space-y-4">
+            <h3 className="text-lg font-semibold text-gray-900 mb-6">질문 목록</h3>
+            <div className="space-y-6">
               {questionSet.questions.map((question, index) => (
-                <div key={question.id} className="p-4 border border-gray-200 rounded-xl">
-                  <div className="text-sm text-gray-600 mb-2">질문 {index + 1}</div>
-                  <div className="font-medium text-gray-900 mb-3">{question.question}</div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                    <div className="px-3 py-2 bg-blue-50 border border-blue-200 rounded-lg">
-                      <span className="text-sm font-medium text-blue-700">A: </span>
-                      <span className="text-gray-900">{question.optionA}</span>
+                <div key={question.id} className="relative">
+                  {/* 질문 카드 */}
+                  <div className="p-5 border border-gray-200 rounded-xl bg-gray-50/30">
+                    {/* 질문 텍스트 */}
+                    <div className="mb-4">
+                      <h4 className="text-base font-medium text-gray-900 leading-relaxed">
+                        {question.question}
+                      </h4>
                     </div>
-                    <div className="px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg">
-                      <span className="text-sm font-medium text-gray-700">B: </span>
-                      <span className="text-gray-900">{question.optionB}</span>
+                    
+                    {/* 선택지 */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      <div className="flex items-center p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                        <div className="w-6 h-6 bg-blue-500 text-white text-xs font-bold rounded-full flex items-center justify-center mr-3 flex-shrink-0">
+                          A
+                        </div>
+                        <span className="text-gray-900 font-medium">{question.optionA}</span>
+                      </div>
+                      <div className="flex items-center p-3 bg-gray-50 border border-gray-200 rounded-lg">
+                        <div className="w-6 h-6 bg-gray-500 text-white text-xs font-bold rounded-full flex items-center justify-center mr-3 flex-shrink-0">
+                          B
+                        </div>
+                        <span className="text-gray-900 font-medium">{question.optionB}</span>
+                      </div>
                     </div>
                   </div>
                 </div>

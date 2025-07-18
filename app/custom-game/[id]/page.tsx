@@ -5,7 +5,7 @@ import { useRouter, useParams } from "next/navigation"
 import QuestionCard from "../../../components/QuestionCard"
 import ChoiceButton from "../../../components/ChoiceButton"
 import BackButton from "../../../components/BackButton"
-import { getCustomQuestionSetByIdFromDB } from "../../../lib/supabase-storage"
+import { getCustomQuestionSetByIdFromDB, updateQuestionVotesInDB } from "../../../lib/supabase-storage"
 import { saveCurrentSession } from "../../../lib/storage"
 import type { CustomQuestionSet, GameSession } from "../../../lib/storage"
 
@@ -55,6 +55,13 @@ export default function CustomGamePage() {
     const updatedAnswers = [...answers, newAnswer]
 
     setAnswers(updatedAnswers)
+
+    // DB에 투표 저장
+    try {
+      await updateQuestionVotesInDB(currentQuestion.id, questionSet.id, choice)
+    } catch (error) {
+      console.error("Error saving vote to database:", error)
+    }
 
     // 다음 질문으로 이동 또는 완료
     const nextIndex = currentIndex + 1

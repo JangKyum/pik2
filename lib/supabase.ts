@@ -53,6 +53,35 @@ export interface Database {
           user_id?: string
         }
       }
+      question_votes: {
+        Row: {
+          id: string
+          question_id: string
+          question_set_id: string
+          votes_a: number
+          votes_b: number
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          question_id: string
+          question_set_id: string
+          votes_a?: number
+          votes_b?: number
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          question_id?: string
+          question_set_id?: string
+          votes_a?: number
+          votes_b?: number
+          created_at?: string
+          updated_at?: string
+        }
+      }
     }
   }
 }

@@ -58,6 +58,33 @@ export const saveCustomQuestionSetToDB = async (questionSet: CustomQuestionSet):
   }
 }
 
+// Supabase에서 커스텀 질문 세트 업데이트
+export const updateCustomQuestionSetInDB = async (questionSet: CustomQuestionSet): Promise<boolean> => {
+  try {
+    const { error } = await typedSupabase
+      .from('custom_question_sets')
+      .update({
+        title: questionSet.title,
+        category: questionSet.category,
+        questions: questionSet.questions,
+        is_world_cup: questionSet.isWorldCup,
+        world_cup_rounds: questionSet.worldCupRounds,
+        share_code: questionSet.shareCode || '',
+      })
+      .eq('id', questionSet.id)
+
+    if (error) {
+      console.error('Error updating custom question set:', error)
+      return false
+    }
+
+    return true
+  } catch (error) {
+    console.error('Error updating custom question set:', error)
+    return false
+  }
+}
+
 // Supabase에서 특정 커스텀 질문 세트 가져오기
 export const getCustomQuestionSetByIdFromDB = async (id: string): Promise<CustomQuestionSet | null> => {
   try {
@@ -166,8 +193,18 @@ export const getCustomQuestionSetsHybrid = async (): Promise<CustomQuestionSet[]
 
 export const saveCustomQuestionSetHybrid = async (questionSet: CustomQuestionSet): Promise<boolean> => {
   try {
-    // Supabase에 저장 시도
-    const dbSuccess = await saveCustomQuestionSetToDB(questionSet)
+    // 먼저 기존 질문 세트가 있는지 확인
+    const existingSet = await getCustomQuestionSetByIdFromDB(questionSet.id)
+    
+    let dbSuccess = false
+    
+    if (existingSet) {
+      // 기존 질문 세트가 있으면 업데이트
+      dbSuccess = await updateCustomQuestionSetInDB(questionSet)
+    } else {
+      // 기존 질문 세트가 없으면 새로 생성
+      dbSuccess = await saveCustomQuestionSetToDB(questionSet)
+    }
     
     if (dbSuccess) {
       // 성공하면 로컬 스토리지도 업데이트
@@ -199,5 +236,121 @@ export const saveCustomQuestionSetHybrid = async (questionSet: CustomQuestionSet
   } catch (error) {
     console.error('Error saving question set:', error)
     return false
+  }
+} 
+
+// 투표 통계 가져오기
+export const getQuestionVotesFromDB = async (questionId: string): Promise<{ votesA: number; votesB: number }> => {
+  try {
+    const { data, error } = await typedSupabase
+      .from('question_votes')
+      .select('votes_a, votes_b')
+      .eq('question_id', questionId)
+      .single()
+
+    if (error) {
+      console.error('Error fetching question votes:', error)
+      return { votesA: 0, votesB: 0 }
+    }
+
+    return {
+      votesA: data?.votes_a || 0,
+      votesB: data?.votes_b || 0
+    }
+  } catch (error) {
+    console.error('Error fetching question votes:', error)
+    return { votesA: 0, votesB: 0 }
+  }
+}
+
+// 투표 업데이트 (UPSERT)
+export const updateQuestionVotesInDB = async (
+  questionId: string, 
+  questionSetId: string, 
+  choice: "A" | "B"
+): Promise<boolean> => {
+  try {
+    // 먼저 기존 투표 데이터 확인
+    const { data: existingVote } = await typedSupabase
+      .from('question_votes')
+      .select('votes_a, votes_b')
+      .eq('question_id', questionId)
+      .single()
+
+    let newVotesA = 0
+    let newVotesB = 0
+
+    if (existingVote) {
+      // 기존 데이터가 있으면 업데이트
+      newVotesA = existingVote.votes_a + (choice === "A" ? 1 : 0)
+      newVotesB = existingVote.votes_b + (choice === "B" ? 1 : 0)
+
+      const { error } = await typedSupabase
+        .from('question_votes')
+        .update({
+          votes_a: newVotesA,
+          votes_b: newVotesB,
+          updated_at: new Date().toISOString()
+        })
+        .eq('question_id', questionId)
+
+      if (error) {
+        console.error('Error updating question votes:', error)
+        return false
+      }
+    } else {
+      // 기존 데이터가 없으면 새로 생성
+      newVotesA = choice === "A" ? 1 : 0
+      newVotesB = choice === "B" ? 1 : 0
+
+      const { error } = await typedSupabase
+        .from('question_votes')
+        .insert({
+          question_id: questionId,
+          question_set_id: questionSetId,
+          votes_a: newVotesA,
+          votes_b: newVotesB,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        })
+
+      if (error) {
+        console.error('Error creating question votes:', error)
+        return false
+      }
+    }
+
+    return true
+  } catch (error) {
+    console.error('Error updating question votes:', error)
+    return false
+  }
+}
+
+// 질문 세트의 모든 질문에 대한 투표 통계 가져오기
+export const getQuestionSetVotesFromDB = async (questionSetId: string): Promise<Record<string, { votesA: number; votesB: number }>> => {
+  try {
+    const { data, error } = await typedSupabase
+      .from('question_votes')
+      .select('question_id, votes_a, votes_b')
+      .eq('question_set_id', questionSetId)
+
+    if (error) {
+      console.error('Error fetching question set votes:', error)
+      return {}
+    }
+
+    const votesMap: Record<string, { votesA: number; votesB: number }> = {}
+    data?.forEach(vote => {
+      votesMap[vote.question_id] = {
+        votesA: vote.votes_a,
+        votesB: vote.votes_b
+      }
+    })
+
+    return votesMap
+  } catch (error) {
+    console.error('Error fetching question set votes:', error)
+    return {}
   }
 } 
