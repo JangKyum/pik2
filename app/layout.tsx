@@ -2,9 +2,9 @@ import type { Metadata } from 'next'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'Pick2 Game',
-  description: 'Pick2 - 밸런스 게임',
-  generator: 'Pick2 Game',
+  title: 'Pik2 Game',
+  description: 'Pik2 - 밸런스 게임',
+  generator: 'Pik2 Game',
   icons: {
     icon: [
       { url: '/favicon.svg', type: 'image/svg+xml' },
