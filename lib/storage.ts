@@ -8,6 +8,8 @@ export interface Question {
   votesB: number
 }
 
+export type Choice = "A" | "B"
+
 export interface CustomQuestionSet {
   id: string
   title: string
@@ -24,7 +26,7 @@ export interface GameSession {
   category?: string
   questions: Question[]
   currentIndex: number
-  answers: Array<{ questionId: string; choice: "A" | "B" }>
+  answers: Array<{ questionId: string; choice: Choice }>
   isCompleted: boolean
   customSetId?: string
   // 월드컵 관련 필드
@@ -59,7 +61,7 @@ export const saveQuestions = (questions: Question[]) => {
   localStorage.setItem("pik2-questions", JSON.stringify(questions))
 }
 
-export const updateQuestionVotes = (questionId: string, choice: "A" | "B") => {
+export const updateQuestionVotes = (questionId: string, choice: Choice) => {
   const questions = getStoredQuestions()
   const questionIndex = questions.findIndex((q) => q.id === questionId)
 
@@ -146,13 +148,13 @@ export const setCurrentQuestion = (questionId: string) => {
 }
 
 // 마지막 선택 관련 함수들
-export const getLastChoice = (): "A" | "B" | null => {
+export const getLastChoice = (): Choice | null => {
   if (typeof window === "undefined") return null
   const stored = localStorage.getItem("pik2-last-choice")
-  return stored as "A" | "B" | null
+  return stored as Choice | null
 }
 
-export const setLastChoice = (choice: "A" | "B") => {
+export const setLastChoice = (choice: Choice) => {
   if (typeof window === "undefined") return
   localStorage.setItem("pik2-last-choice", choice)
 }

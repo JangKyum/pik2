@@ -1,5 +1,5 @@
 import { typedSupabase } from './supabase'
-import type { CustomQuestionSet, Question } from './storage'
+import type { CustomQuestionSet, Question, Choice } from './storage'
 
 // Supabase에서 커스텀 질문 세트 목록 가져오기
 export const getCustomQuestionSetsFromDB = async (): Promise<CustomQuestionSet[]> => {
@@ -267,7 +267,7 @@ export const getQuestionVotesFromDB = async (questionId: string): Promise<{ vote
 export const updateQuestionVotesInDB = async (
   questionId: string, 
   questionSetId: string, 
-  choice: "A" | "B"
+  choice: Choice
 ): Promise<boolean> => {
   try {
     // 먼저 기존 투표 데이터 확인

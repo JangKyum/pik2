@@ -1,35 +1,38 @@
 import type { Question } from "../lib/storage"
+import categoriesData from "../data/categories.json"
 
 interface QuestionCardProps {
   question: Question
 }
 
 export default function QuestionCard({ question }: QuestionCardProps) {
-  const getCategoryColor = (category: string) => {
-    const colors = {
-      food: "bg-orange-100 text-orange-800",
-      lifestyle: "bg-purple-100 text-purple-800",
-      superpower: "bg-blue-100 text-blue-800",
-      time: "bg-green-100 text-green-800",
-      weather: "bg-yellow-100 text-yellow-800",
-      social: "bg-pink-100 text-pink-800",
-      money: "bg-emerald-100 text-emerald-800",
-      pet: "bg-amber-100 text-amber-800",
-    }
-    return colors[category as keyof typeof colors] || "bg-gray-100 text-gray-800"
+  const getCategoryInfo = (categoryId: string) => {
+    const category = categoriesData.find((cat) => cat.id === categoryId)
+    return category || { name: categoryId, emoji: "📝", color: "gray" }
   }
 
+  const categoryInfo = getCategoryInfo(question.category)
+
   return (
-    <div className="w-full max-w-4xl mx-auto">
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 md:p-8">
+    <div className="w-full">
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-4 sm:p-6 md:p-8">
         <div className="text-center">
-          <div
-            className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium mb-6 md:mb-8 ${getCategoryColor(question.category)}`}
-          >
-            {question.category}
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs sm:text-sm font-medium mb-4 sm:mb-6 md:mb-8 bg-gray-100 text-gray-700 shadow-sm">
+            <span className="text-base sm:text-lg">{categoryInfo.emoji}</span>
+            <span>{categoryInfo.name}</span>
           </div>
 
-          <h2 className="text-xl md:text-2xl lg:text-3xl font-bold text-gray-900 leading-tight">{question.question}</h2>
+          <h2 
+            className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold text-gray-900 leading-relaxed"
+            style={{
+              wordBreak: 'break-word',
+              wordWrap: 'break-word',
+              overflowWrap: 'break-word',
+              hyphens: 'auto'
+            }}
+          >
+            {question.question}
+          </h2>
         </div>
       </div>
     </div>
