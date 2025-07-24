@@ -34,6 +34,7 @@ export default function WorldCupGamePage() {
     }
     // 월드컵 브라켓 생성
     const bracket = createWorldCupBracket(set.questions, set.worldCupRounds || 8)
+    
     setQuestionSet(set)
     setRoundQuestions(bracket)
       } catch (error) {
@@ -46,20 +47,13 @@ export default function WorldCupGamePage() {
     fetchSet()
   }, [params.id, router])
 
-  const getRoundName = (round: number, totalRounds: number) => {
-    if (round === 1) {
-      if (totalRounds === 4) return "준결승"
-      if (totalRounds === 8) return "8강"
-      if (totalRounds === 16) return "16강"
-      if (totalRounds === 32) return "32강"
-    }
-
-    const remaining = Math.ceil(roundQuestions.length / Math.pow(2, round - 1))
-    if (remaining === 2) return "결승"
-    if (remaining === 4) return "준결승"
-    if (remaining === 8) return "8강"
-    if (remaining === 16) return "16강"
-    return `${remaining}강`
+  const getRoundName = (currentQuestions: number) => {
+    if (currentQuestions === 32) return "32강"
+    if (currentQuestions === 16) return "16강"
+    if (currentQuestions === 8) return "8강"
+    if (currentQuestions === 4) return "준결승"
+    if (currentQuestions === 2) return "결승"
+    return `${currentQuestions}강`
   }
 
   const handleChoice = async (choice: "A" | "B") => {
@@ -71,48 +65,53 @@ export default function WorldCupGamePage() {
     const currentQuestionB = roundQuestions[currentMatchIndex * 2 + 1]
     const winner = choice === "A" ? currentQuestionA : currentQuestionB
 
-    const newWinners = [...winners, winner]
-    setWinners(newWinners)
-
+    // 현재 라운드의 모든 승자를 계산
+    const updatedWinners = [...winners, winner]
     const nextMatchIndex = currentMatchIndex + 1
     const matchesInRound = Math.floor(roundQuestions.length / 2)
 
-    setTimeout(() => {
-      if (nextMatchIndex >= matchesInRound) {
-        // 라운드 완료
-        if (newWinners.length === 1) {
-          // 토너먼트 완료
-          const session: GameSession = {
-            type: "worldcup",
-            questions: [winner],
-            currentIndex: 0,
-            answers: [{ questionId: winner.id, choice: "A" }],
-            isCompleted: true,
-            customSetId: questionSet.id,
-            worldCupRounds: questionSet.worldCupRounds,
-          }
-
-          saveCurrentSession(session)
-          setGameCompleted(true)
-
-          setTimeout(() => {
-            router.push("/worldcup-result")
-          }, 1000)
-        } else {
-          // 다음 라운드로
-          const nextRoundQuestions = getNextRoundQuestions(newWinners)
-          setRoundQuestions(nextRoundQuestions)
-          setWinners([])
-          setCurrentMatchIndex(0)
-          setCurrentRound(currentRound + 1)
-          setIsSubmitting(false)
+    if (nextMatchIndex >= matchesInRound) {
+      // 라운드 완료
+      if (updatedWinners.length === 1) {
+        // 토너먼트 완료
+        const session: GameSession = {
+          type: "worldcup",
+          questions: [winner],
+          currentIndex: 0,
+          answers: [{ questionId: winner.id, choice: "A" }],
+          isCompleted: true,
+          customSetId: questionSet.id,
+          worldCupRounds: questionSet.worldCupRounds,
         }
+
+        saveCurrentSession(session)
+        setGameCompleted(true)
+
+        setTimeout(() => {
+          router.push("/worldcup-result")
+        }, 1000)
       } else {
-        // 같은 라운드 다음 매치
+        // 다음 라운드로 진행
+        // 상태를 순차적으로 업데이트
+        setWinners([]) // 승자 목록 초기화
+        setCurrentMatchIndex(0) // 매치 인덱스 초기화
+        setCurrentRound(prev => prev + 1) // 라운드 증가
+        
+        // 가장 중요한 부분: 승자들로 새 라운드 구성
+        setTimeout(() => {
+          setRoundQuestions([...updatedWinners]) // 새 배열로 복사
+          setIsSubmitting(false)
+        }, 100) // 짧은 지연으로 상태 업데이트 완료 대기
+      }
+    } else {
+      // 같은 라운드 다음 매치
+      setWinners(updatedWinners)
+      
+      setTimeout(() => {
         setCurrentMatchIndex(nextMatchIndex)
         setIsSubmitting(false)
-      }
-    }, 800)
+      }, 800)
+    }
   }
 
   if (isLoading) {
@@ -158,15 +157,15 @@ export default function WorldCupGamePage() {
   const currentQuestionA = roundQuestions[currentMatchIndex * 2]
   const currentQuestionB = roundQuestions[currentMatchIndex * 2 + 1]
   const matchesInRound = Math.floor(roundQuestions.length / 2)
-  const roundName = getRoundName(currentRound, questionSet.worldCupRounds || 8)
+  const roundName = getRoundName(roundQuestions.length)
 
   // 가상의 매치 카드 생성
   const matchQuestion = {
     id: `match_${currentMatchIndex}`,
     category: questionSet.category,
     question: `${roundName} ${currentMatchIndex + 1}/${matchesInRound}`,
-    optionA: currentQuestionA.optionA,
-    optionB: currentQuestionB.optionB,
+    optionA: currentQuestionA.optionA, // 첫 번째 캐릭터
+    optionB: currentQuestionB.optionA, // 두 번째 캐릭터
     votesA: 0,
     votesB: 0,
   }

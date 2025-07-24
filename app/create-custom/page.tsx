@@ -312,7 +312,9 @@ function CreateCustomContent() {
                             }
                           `}
                         >
-                              <div className="font-semibold">{rounds}강</div>
+                              <div className="font-semibold">
+                                {rounds === 4 ? "준결승" : rounds === 8 ? "8강" : rounds === 16 ? "16강" : "32강"}
+                              </div>
                               <div className="text-xs mt-1">{rounds}개 질문</div>
                         </button>
                       ))}
@@ -344,7 +346,11 @@ function CreateCustomContent() {
               {isWorldCup && (
                 <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
                   <p className="text-sm text-blue-800">
-                    <strong>월드컵 모드:</strong> {worldCupRounds}강 토너먼트를 위해 {worldCupRounds}개의 질문이 필요합니다.
+                    <strong>월드컵 모드:</strong> {worldCupRounds === 4 ? "준결승" : worldCupRounds === 8 ? "8강" : worldCupRounds === 16 ? "16강" : "32강"} 토너먼트를 위해 {worldCupRounds}개의 질문이 필요합니다.
+                    <br />
+                    <span className="text-xs">
+                      {worldCupRounds}개 중에서 토너먼트 방식으로 최종 1개를 선택합니다.
+                    </span>
                   </p>
                 </div>
               )}

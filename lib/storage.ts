@@ -114,12 +114,52 @@ export function shuffleArray<T>(array: T[]): T[] {
 }
 
 export function createWorldCupBracket(questions: Question[], rounds: number): Question[] {
-  const shuffled = shuffleArray(questions)
+  // 월드컵 모드에서는 각 질문의 A, B 선택지를 개별 질문으로 변환
+  const individuals: Question[] = []
+  
+  questions.forEach((q, index) => {
+    // optionA를 개별 질문으로 변환
+    individuals.push({
+      id: `${q.id}_A`,
+      category: q.category,
+      question: q.optionA, // 캐릭터/옵션 이름이 질문이 됨
+      optionA: q.optionA,
+      optionB: q.optionA, // 동일하게 설정 (실제로는 사용하지 않음)
+      votesA: 0,
+      votesB: 0
+    })
+    
+    // optionB를 개별 질문으로 변환
+    individuals.push({
+      id: `${q.id}_B`,
+      category: q.category,
+      question: q.optionB, // 캐릭터/옵션 이름이 질문이 됨
+      optionA: q.optionB,
+      optionB: q.optionB, // 동일하게 설정 (실제로는 사용하지 않음)
+      votesA: 0,
+      votesB: 0
+    })
+  })
+  
+  // 개별 캐릭터들을 셔플
+  const shuffled = shuffleArray(individuals)
+  
+  // 필요한 수만큼 선택 (보통 individuals.length와 rounds가 같아야 함)
+  if (shuffled.length < rounds) {
+    // 질문이 부족하면 중복해서 사용
+    const needed = rounds - shuffled.length
+    for (let i = 0; i < needed; i++) {
+      shuffled.push(shuffled[i % shuffled.length])
+    }
+  }
+  
   return shuffled.slice(0, rounds)
 }
 
 export function getNextRoundQuestions(winners: Question[]): Question[] {
-  return shuffleArray(winners)
+  // 승자들은 순서대로 다음 라운드에 진출 (셔플하지 않음)
+  // 토너먼트 브라켓 순서 유지
+  return winners
 }
 
 // 공유 코드 생성
