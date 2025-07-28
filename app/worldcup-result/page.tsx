@@ -3,35 +3,133 @@
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { getCurrentSession, clearCurrentSession } from "../../lib/storage"
-import { getCustomQuestionSetByIdFromDB } from "../../lib/supabase-storage"
-import type { GameSession, CustomQuestionSet } from "../../lib/storage"
+import { getCustomQuestionSetByIdFromDB, getQuestionSetVotesFromDB } from "../../lib/supabase-storage"
+import { GameSession, CustomQuestionSet, Question } from "../../lib/storage"
+
+interface WinnerStats {
+  totalVotes: number
+  totalAllVotes: number
+  averagePercentage: number
+  allStats: {
+    question: Question
+    votes: number
+    totalVotes: number
+    percentage: number
+    isOptionA: boolean
+  }[]
+  originalQuestion: Question
+}
 
 export default function WorldCupResultPage() {
   const [session, setSession] = useState<GameSession | null>(null)
   const [questionSet, setQuestionSet] = useState<CustomQuestionSet | null>(null)
+  const [voteStats, setVoteStats] = useState<Record<string, { votesA: number; votesB: number }>>({})
+  const [winnerStats, setWinnerStats] = useState<WinnerStats | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const router = useRouter()
 
   useEffect(() => {
     const fetchData = async () => {
-    const currentSession = getCurrentSession()
-    if (!currentSession || currentSession.type !== "worldcup" || !currentSession.isCompleted) {
-      router.push("/")
-      return
-    }
+      const currentSession = getCurrentSession()
+      if (!currentSession || currentSession.type !== "worldcup" || !currentSession.isCompleted) {
+        router.push("/")
+        return
+      }
+      
       try {
         const set = currentSession.customSetId ? await getCustomQuestionSetByIdFromDB(currentSession.customSetId) : null
-    if (!set) {
-      router.push("/")
-      return
-    }
-    setSession(currentSession)
-    setQuestionSet(set)
+        if (!set) {
+          router.push("/")
+          return
+        }
+        
+        setSession(currentSession)
+        setQuestionSet(set)
+
+        // 투표 통계 가져오기
+        const voteStats = await getQuestionSetVotesFromDB(set.id)
+        
+        // 테스트용 더미 데이터 추가 (실제 데이터가 없을 때)
+        const testVoteStats = { ...voteStats }
+        if (Object.keys(voteStats).length === 0) {
+          set.questions.forEach((q, index) => {
+            testVoteStats[q.id] = { votesA: Math.floor(Math.random() * 50) + 10, votesB: Math.floor(Math.random() * 50) + 10 }
+          })
+        }
+        
+        setVoteStats(testVoteStats)
+
+        // 우승자의 투표 통계 계산
+        const winner = currentSession.questions[0]
+        
+        if (winner && set.questions.length > 0) {
+          // 우승자가 참여한 모든 대결의 통계 찾기
+          const winnerStats = []
+          const winnerOption = winner.optionA
+          
+          // 모든 투표 통계에서 우승자가 참여한 대결 찾기
+          for (const [questionId, stats] of Object.entries(voteStats)) {
+            // 해당 질문에서 우승자가 참여했는지 확인
+            const question = set.questions.find(q => q.id === questionId.split('_').slice(0, -1).join('_'))
+            if (question) {
+              if (question.optionA === winnerOption) {
+                // 우승자가 옵션 A인 경우
+                const votesA = stats.votesA || 0
+                const votesB = stats.votesB || 0
+                const totalVotes = votesA + votesB
+                
+                if (totalVotes > 0) {
+                  const percentage = Math.round((votesA / totalVotes) * 100)
+                  winnerStats.push({
+                    question: question,
+                    votes: votesA,
+                    totalVotes: totalVotes,
+                    percentage: percentage,
+                    isOptionA: true
+                  })
+                }
+              } else if (question.optionB === winnerOption) {
+                // 우승자가 옵션 B인 경우
+                const votesA = stats.votesA || 0
+                const votesB = stats.votesB || 0
+                const totalVotes = votesA + votesB
+                
+                if (totalVotes > 0) {
+                  const percentage = Math.round((votesB / totalVotes) * 100)
+                  winnerStats.push({
+                    question: question,
+                    votes: votesB,
+                    totalVotes: totalVotes,
+                    percentage: percentage,
+                    isOptionA: false
+                  })
+                }
+              }
+            }
+          }
+          
+          if (winnerStats.length > 0) {
+            // 모든 통계를 합산
+            const totalVotes = winnerStats.reduce((sum, stat) => sum + stat.votes, 0)
+            const totalAllVotes = winnerStats.reduce((sum, stat) => sum + stat.totalVotes, 0)
+            const averagePercentage = Math.round((totalVotes / totalAllVotes) * 100)
+            
+            const winnerStatsData = {
+              totalVotes: totalVotes,
+              totalAllVotes: totalAllVotes,
+              averagePercentage: averagePercentage,
+              allStats: winnerStats,
+              originalQuestion: winnerStats[0]?.question
+            }
+            
+            setWinnerStats(winnerStatsData)
+          }
+        }
       } catch (error) {
         console.error("Error fetching question set:", error)
         router.push("/")
       } finally {
-    setIsLoading(false)
+        setIsLoading(false)
       }
     }
     fetchData()
@@ -83,16 +181,8 @@ export default function WorldCupResultPage() {
         <div className="flex flex-col items-center justify-center min-h-screen">
           {/* 헤더 */}
           <div className="w-full max-w-2xl mx-auto mb-8">
-            <div className="flex items-center justify-between">
-              <button
-                onClick={handleGoHome}
-                className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
-              >
-                <span className="text-xl">←</span>
-                <span>홈으로</span>
-              </button>
+            <div className="text-center">
               <h1 className="text-xl font-bold text-gray-900">토너먼트 결과</h1>
-              <div className="w-16"></div>
             </div>
           </div>
 
@@ -111,6 +201,43 @@ export default function WorldCupResultPage() {
                 <h3 className="text-xl font-semibold text-gray-800 mb-2">{questionSet.title}</h3>
                 <div className="text-2xl font-bold text-orange-600">{winner.optionA}</div>
               </div>
+
+              {/* 투표 통계 */}
+              {winnerStats ? (
+                <div className="bg-blue-50 rounded-xl p-4 mb-6">
+                  <h4 className="text-sm font-medium text-blue-800 mb-2">📊 실제 투표 통계</h4>
+                  <div className="text-xs text-blue-600 mb-3">
+                    <strong>🏆 최종 우승자</strong>가 참여한 모든 대결의 통계입니다.<br />
+                    (마지막 선택이 최종 우승자입니다)
+                  </div>
+                  
+                  {/* 전체 통계 */}
+                  <div className="flex items-center justify-between">
+                    <div className="text-blue-700">
+                      <span className="text-lg font-bold">{winnerStats.totalVotes}명</span> 총 선택
+                    </div>
+                    <div className="text-blue-700">
+                      <span className="text-lg font-bold">{winnerStats.averagePercentage}%</span> 평균 선택률
+                    </div>
+                  </div>
+                  <div className="mt-3">
+                    <div className="w-full bg-blue-200 rounded-full h-2">
+                      <div 
+                        className="bg-blue-600 h-2 rounded-full transition-all duration-500"
+                        style={{ width: `${winnerStats.averagePercentage}%` }}
+                      ></div>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div className="bg-gray-50 rounded-xl p-4 mb-6">
+                  <h4 className="text-sm font-medium text-gray-600 mb-2">📊 투표 통계</h4>
+                  <p className="text-gray-500 text-sm">
+                    아직 다른 사용자들의 투표 데이터가 없습니다.<br />
+                    더 많은 사람들이 이 질문을 플레이하면 통계가 표시됩니다!
+                  </p>
+                </div>
+              )}
 
               <div className="text-sm text-gray-600 mb-6">
                 {questionSet.worldCupRounds}강 토너먼트에서 최종 우승했습니다!

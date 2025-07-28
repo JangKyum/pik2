@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react"
 import { useRouter, useParams } from "next/navigation"
 import ChoiceButton from "../../../components/ChoiceButton"
-import { getCustomQuestionSetByIdFromDB } from "../../../lib/supabase-storage"
+import { getCustomQuestionSetByIdFromDB, updateQuestionVotesInDB } from "../../../lib/supabase-storage"
 import { saveCurrentSession, createWorldCupBracket, getNextRoundQuestions } from "../../../lib/storage"
 import type { CustomQuestionSet, GameSession, Question } from "../../../lib/storage"
 
@@ -21,27 +21,27 @@ export default function WorldCupGamePage() {
 
   useEffect(() => {
     const fetchSet = async () => {
-    const id = params.id as string
-    if (!id) {
-      router.push("/")
-      return
-    }
+      const id = params.id as string
+      if (!id) {
+        router.push("/")
+        return
+      }
       try {
         const set = await getCustomQuestionSetByIdFromDB(id)
-    if (!set || !set.isWorldCup) {
-      router.push("/")
-      return
-    }
-    // 월드컵 브라켓 생성
-    const bracket = createWorldCupBracket(set.questions, set.worldCupRounds || 8)
-    
-    setQuestionSet(set)
-    setRoundQuestions(bracket)
+        if (!set || !set.isWorldCup) {
+          router.push("/")
+          return
+        }
+        // 월드컵 브라켓 생성
+        const bracket = createWorldCupBracket(set.questions, set.worldCupRounds || 8)
+        
+        setQuestionSet(set)
+        setRoundQuestions(bracket)
       } catch (error) {
         console.error("Error fetching question set:", error)
         router.push("/")
       } finally {
-    setIsLoading(false)
+        setIsLoading(false)
       }
     }
     fetchSet()
@@ -64,6 +64,19 @@ export default function WorldCupGamePage() {
     const currentQuestionA = roundQuestions[currentMatchIndex * 2]
     const currentQuestionB = roundQuestions[currentMatchIndex * 2 + 1]
     const winner = choice === "A" ? currentQuestionA : currentQuestionB
+
+    // 투표를 데이터베이스에 저장 (사용자가 선택한 것만)
+    try {
+      const selectedQuestion = choice === "A" ? currentQuestionA : currentQuestionB
+      console.log('🗳️ Saving vote for question:', selectedQuestion.id)
+      console.log('🗳️ Question set ID:', questionSet.id)
+      console.log('🗳️ Choice:', choice)
+      
+      const result = await updateQuestionVotesInDB(selectedQuestion.id, questionSet.id, choice)
+      console.log('🗳️ Vote save result:', result)
+    } catch (error) {
+      console.error("Error saving vote to database:", error)
+    }
 
     // 현재 라운드의 모든 승자를 계산
     const updatedWinners = [...winners, winner]
