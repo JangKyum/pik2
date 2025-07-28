@@ -68,12 +68,7 @@ export default function WorldCupGamePage() {
     // 투표를 데이터베이스에 저장 (사용자가 선택한 것만)
     try {
       const selectedQuestion = choice === "A" ? currentQuestionA : currentQuestionB
-      console.log('🗳️ Saving vote for question:', selectedQuestion.id)
-      console.log('🗳️ Question set ID:', questionSet.id)
-      console.log('🗳️ Choice:', choice)
-      
-      const result = await updateQuestionVotesInDB(selectedQuestion.id, questionSet.id, choice)
-      console.log('🗳️ Vote save result:', result)
+      await updateQuestionVotesInDB(selectedQuestion.id, questionSet.id, choice)
     } catch (error) {
       console.error("Error saving vote to database:", error)
     }

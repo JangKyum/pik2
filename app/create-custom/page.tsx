@@ -41,9 +41,7 @@ function CreateCustomContent() {
   // 기존 질문 세트 로드
   const loadExistingQuestionSet = async (id: string) => {
     try {
-      console.log('Loading question set with ID:', id) // 디버깅용
       const questionSet = await getCustomQuestionSetByIdFromDB(id)
-      console.log('Loaded question set:', questionSet) // 디버깅용
       
       if (questionSet) {
         setOriginalQuestionSet(questionSet) // 원본 데이터 저장
@@ -62,9 +60,6 @@ function CreateCustomContent() {
           optionB: q.optionB
         }))
         setQuestions(questionsWithoutVotes)
-        console.log('Set form data for editing') // 디버깅용
-      } else {
-        console.log('Question set not found') // 디버깅용
       }
     } catch (error) {
       console.error("Error loading question set:", error)
@@ -153,8 +148,6 @@ function CreateCustomContent() {
       createdAt: isEditing && originalQuestionSet ? originalQuestionSet.createdAt : new Date().toISOString(),
       shareCode: isEditing && originalQuestionSet ? originalQuestionSet.shareCode : generateShareCode(),
     }
-
-    console.log('Saving question set:', questionSet) // 디버깅용
 
     try {
       const success = await saveCustomQuestionSetHybrid(questionSet)
