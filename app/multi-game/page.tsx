@@ -13,6 +13,7 @@ export default function MultiGamePage() {
   const [session, setSession] = useState<GameSession | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isGameCompleted, setIsGameCompleted] = useState(false)
   const router = useRouter()
 
   useEffect(() => {
@@ -23,7 +24,19 @@ export default function MultiGamePage() {
       return
     }
 
-    setSession(currentSession)
+    // 멀티 게임용 고유 ID가 없으면 생성
+    if (!currentSession.customSetId) {
+      const multiGameId = `multi-${currentSession.category}-${Date.now()}`
+      const updatedSession = {
+        ...currentSession,
+        customSetId: multiGameId,
+      }
+      saveCurrentSession(updatedSession)
+      setSession(updatedSession)
+    } else {
+      setSession(currentSession)
+    }
+    
     setIsLoading(false)
   }, [router])
 
@@ -37,9 +50,11 @@ export default function MultiGamePage() {
     // 로컬 스토리지 투표 업데이트
     updateQuestionVotes(currentQuestion.id, choice)
 
-    // Supabase에 투표 결과 저장 (멀티 게임용 questionSetId 사용)
+    // Supabase에 투표 결과 저장 (세션에 저장된 고유 questionSetId 사용)
     try {
-      await updateQuestionVotesInDB(currentQuestion.id, "multi-game", choice)
+      if (session.customSetId) {
+        await updateQuestionVotesInDB(currentQuestion.id, session.customSetId, choice)
+      }
     } catch (error) {
       console.error("Error saving vote to database:", error)
     }
@@ -62,13 +77,16 @@ export default function MultiGamePage() {
     setSession(updatedSession)
     saveCurrentSession(updatedSession)
 
-    setTimeout(() => {
-      if (isCompleted) {
-        router.push("/multi-result")
-      } else {
+    if (isCompleted) {
+      // 게임 완료 시 즉시 결과 페이지로 이동
+      setIsGameCompleted(true)
+      router.push("/multi-result")
+    } else {
+      // 다음 질문으로 이동
+      setTimeout(() => {
         setIsSubmitting(false)
-      }
-    }, 200)
+      }, 200)
+    }
   }
 
   if (isLoading) {
@@ -82,7 +100,7 @@ export default function MultiGamePage() {
     )
   }
 
-  if (!session || session.currentIndex >= session.questions.length) {
+  if (!session || (session.currentIndex >= session.questions.length && !isGameCompleted)) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">

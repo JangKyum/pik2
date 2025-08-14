@@ -4,7 +4,7 @@ import { useState, useEffect, Suspense } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { generateShareCode } from "../../lib/storage"
 import { saveCustomQuestionSetHybrid, getCustomQuestionSetByIdFromDB } from "../../lib/supabase-storage"
-import type { Question, CustomQuestionSet } from "../../lib/storage"
+import { Question, CustomQuestionSet } from "../../lib/storage"
 import categoriesData from "../../data/categories.json"
 import BackButton from "../../components/BackButton"
 
@@ -175,7 +175,7 @@ function CreateCustomContent() {
   }
 
   const getCategoryInfo = (categoryId: string) => {
-    return categoriesData.find(cat => cat.id === categoryId) || categoriesData.find(cat => cat.id === "other")!
+    return categoriesData.find(cat => cat.id === categoryId) || categoriesData.find(cat => cat.id === "other")
   }
 
   return (

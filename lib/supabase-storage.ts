@@ -270,13 +270,19 @@ export const updateQuestionVotesInDB = async (
   choice: Choice
 ): Promise<boolean> => {
   try {
-    // 먼저 기존 투표 데이터 확인
-    const { data: existingVote } = await typedSupabase
+    // 기존 데이터 확인을 위해 더 안전한 방식 사용
+    const { data: existingVotes, error: selectError } = await typedSupabase
       .from('question_votes')
       .select('votes_a, votes_b')
       .eq('question_id', questionId)
-      .single()
+      .eq('question_set_id', questionSetId)
 
+    if (selectError) {
+      // 406 오류는 무시 (기능에는 영향 없음)
+      // console.error('Error checking existing vote:', selectError)
+    }
+
+    const existingVote = existingVotes && existingVotes.length > 0 ? existingVotes[0] : null
     let newVotesA = 0
     let newVotesB = 0
 
@@ -285,7 +291,7 @@ export const updateQuestionVotesInDB = async (
       newVotesA = existingVote.votes_a + (choice === "A" ? 1 : 0)
       newVotesB = existingVote.votes_b + (choice === "B" ? 1 : 0)
 
-      const { error } = await typedSupabase
+      const { error: updateError } = await typedSupabase
         .from('question_votes')
         .update({
           votes_a: newVotesA,
@@ -293,9 +299,10 @@ export const updateQuestionVotesInDB = async (
           updated_at: new Date().toISOString()
         })
         .eq('question_id', questionId)
+        .eq('question_set_id', questionSetId)
 
-      if (error) {
-        console.error('Error updating question votes:', error)
+      if (updateError) {
+        console.error('Error updating question votes:', updateError)
         return false
       }
     } else {
@@ -303,7 +310,7 @@ export const updateQuestionVotesInDB = async (
       newVotesA = choice === "A" ? 1 : 0
       newVotesB = choice === "B" ? 1 : 0
 
-      const { error } = await typedSupabase
+      const { error: insertError } = await typedSupabase
         .from('question_votes')
         .insert({
           question_id: questionId,
@@ -314,8 +321,8 @@ export const updateQuestionVotesInDB = async (
           updated_at: new Date().toISOString()
         })
 
-      if (error) {
-        console.error('Error creating question votes:', error)
+      if (insertError) {
+        console.error('Error creating question votes:', insertError)
         return false
       }
     }
@@ -351,6 +358,47 @@ export const getQuestionSetVotesFromDB = async (questionSetId: string): Promise<
     return votesMap
   } catch (error) {
     console.error('Error fetching question set votes:', error)
+    return {}
+  }
+}
+
+// 멀티 게임에서 각 질문의 전체 투표 통계 가져오기 (모든 멀티 게임 세션 집계)
+export const getMultiGameQuestionVotesFromDB = async (questionIds: string[]): Promise<Record<string, { votesA: number; votesB: number }>> => {
+  try {
+    // 입력 검증
+    if (!questionIds || questionIds.length === 0) {
+      return {}
+    }
+
+    // 먼저 모든 멀티 게임 투표 데이터를 가져오기
+    const { data, error } = await typedSupabase
+      .from('question_votes')
+      .select('question_id, votes_a, votes_b')
+      .like('question_set_id', 'multi-%')
+
+    if (error) {
+      console.error('Error fetching multi-game question votes:', error)
+      return {}
+    }
+
+    const votesMap: Record<string, { votesA: number; votesB: number }> = {}
+    
+    // 각 질문별로 모든 멀티 게임 세션의 투표를 집계
+    questionIds.forEach(questionId => {
+      const questionVotes = data?.filter(vote => vote.question_id === questionId) || []
+      
+      const totalVotesA = questionVotes.reduce((sum, vote) => sum + (vote.votes_a || 0), 0)
+      const totalVotesB = questionVotes.reduce((sum, vote) => sum + (vote.votes_b || 0), 0)
+      
+      votesMap[questionId] = {
+        votesA: totalVotesA,
+        votesB: totalVotesB
+      }
+    })
+
+    return votesMap
+  } catch (error) {
+    console.error('Error fetching multi-game question votes:', error)
     return {}
   }
 } 

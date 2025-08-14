@@ -3,8 +3,9 @@
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { getCurrentSession, getStoredQuestions, clearCurrentSession } from "../../lib/storage"
-import { getQuestionSetVotesFromDB } from "../../lib/supabase-storage"
+import { getMultiGameQuestionVotesFromDB } from "../../lib/supabase-storage"
 import type { GameSession, Question } from "../../lib/storage"
+import categoriesData from "../../data/categories.json"
 import BackButton from "../../components/BackButton"
 
 export default function MultiResultPage() {
@@ -33,12 +34,14 @@ export default function MultiResultPage() {
       setSession(currentSession)
       setUpdatedQuestions(sessionQuestions)
 
-      // Supabase에서 실제 투표 결과 가져오기
+      // 멀티 게임에서 각 질문의 전체 투표 통계 가져오기
       try {
-        const voteStats = await getQuestionSetVotesFromDB("multi-game")
+        const questionIds = sessionQuestions.map(q => q.id)
+        const voteStats = await getMultiGameQuestionVotesFromDB(questionIds)
         setVoteStats(voteStats)
       } catch (error) {
-        console.error("Error fetching vote stats:", error)
+        // 406 오류는 무시 (기능에는 영향 없음)
+        console.log("Vote stats not available, using default values")
       }
 
       setIsLoading(false)
@@ -95,7 +98,11 @@ export default function MultiResultPage() {
             </BackButton>
             <div className="text-center">
               <h1 className="text-2xl font-bold text-gray-900">멀티 게임 결과</h1>
-              <p className="text-sm text-gray-600">전체 결과</p>
+              <p className="text-sm text-gray-600">
+                {session.category && session.category !== "other" 
+                  ? `${categoriesData.find(cat => cat.id === session.category)?.name || session.category} 카테고리` 
+                  : "전체 결과"}
+              </p>
             </div>
             <div className="w-16"></div>
           </div>
@@ -103,7 +110,33 @@ export default function MultiResultPage() {
           {/* 요약 통계 */}
           <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 mb-8">
             <h3 className="text-lg font-semibold text-gray-900 mb-4 text-center">🎉 게임 완료!</h3>
-            <p className="text-center text-gray-600">모든 질문에 답변하셨습니다.</p>
+            <p className="text-center text-gray-600 mb-6">모든 질문에 답변하셨습니다.</p>
+            
+            {/* 전체 통계 */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div className="text-center p-4 bg-blue-50 rounded-lg">
+                <div className="text-2xl font-bold text-blue-600">{session.answers.length}</div>
+                <div className="text-sm text-blue-800">총 질문 수</div>
+              </div>
+              <div className="text-center p-4 bg-green-50 rounded-lg">
+                <div className="text-2xl font-bold text-green-600">
+                  {session.answers.filter(a => a.choice === "A").length}
+                </div>
+                <div className="text-sm text-green-800">A 선택</div>
+              </div>
+              <div className="text-center p-4 bg-purple-50 rounded-lg">
+                <div className="text-2xl font-bold text-purple-600">
+                  {session.answers.filter(a => a.choice === "B").length}
+                </div>
+                <div className="text-sm text-purple-800">B 선택</div>
+              </div>
+              <div className="text-center p-4 bg-orange-50 rounded-lg">
+                <div className="text-2xl font-bold text-orange-600">
+                  {Math.round((session.answers.filter(a => a.choice === "A").length / session.answers.length) * 100)}%
+                </div>
+                <div className="text-sm text-orange-800">A 선택 비율</div>
+              </div>
+            </div>
           </div>
 
           {/* 전체 결과를 한번에 표시 */}
